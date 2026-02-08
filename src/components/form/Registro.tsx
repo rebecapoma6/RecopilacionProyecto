@@ -1,11 +1,10 @@
 import { useState, type ChangeEvent, type FocusEvent, type FormEvent } from "react";
-import { validateField } from "../../utils/regex"; 
-import Button from "../ui/Button"; 
+import { validateField } from "../../utils/regex";
+import Button from "./Button";
 import InputField from "./InputField";
 
 interface FormDataProps {
   name: string;
-  
   email: string;
   password: string;
   passwordRepeat: string;
@@ -19,7 +18,6 @@ interface ErrorsProps {
 }
 
 export default function FormularioRegistro() {
-  // 1. Estados para datos y errores
   const [formData, setFormData] = useState<FormDataProps>({
     name: "",
     email: "",
@@ -34,100 +32,156 @@ export default function FormularioRegistro() {
     passwordRepeat: "",
   });
 
-  // 2. Manejador de cambios (al escribir)
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Limpia el error al escribir
+    if (errors[name as keyof ErrorsProps]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  // 3. Manejador de desenfoque (al salir del input)
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const error = validateField(name, value);
+
+    let regexKey = name;
+    if (name === "name") regexKey = "nombre";
+    if (name === "password") regexKey = "contrasenia";
+
+    if (name === "passwordRepeat") {
+      if (value !== formData.password) {
+        setErrors((prev) => ({ ...prev, passwordRepeat: "Las contraseñas no coinciden" }));
+      }
+      return;
+    }
+
+    if (name === "email") {
+        if (!value.includes("@")) {
+            setErrors((prev) => ({ ...prev, email: "Email no válido" }));
+        }
+        return;
+    }
+
+    const error = validateField(regexKey, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
-  // 4. Envío del formulario
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    // Validar todos los campos a la vez
+    const nameError = validateField("nombre", formData.name);
+    const passError = validateField("contrasenia", formData.password);
+    const emailError = !formData.email.includes("@") ? "Correo inválido" : "";
+    const repeatError = formData.password !== formData.passwordRepeat ? "Las contraseñas no coinciden" : "";
+
     const newErrors = {
-      name: validateField("name", formData.name),
-      
-      email: validateField("email", formData.email),
-      password: validateField("password", formData.password),
-      passwordRepeat: validateField("passwordRepeat", formData.passwordRepeat),
+      name: nameError,
+      email: emailError,
+      password: passError,
+      passwordRepeat: repeatError,
     };
 
     setErrors(newErrors);
 
-    // Comprobar si hay errores (si algún string no está vacío)
     const hasErrors = Object.values(newErrors).some(Boolean);
     
     if (!hasErrors) {
       alert("✅ Formulario válido. Datos listos para enviar.");
-      console.log(formData);
+      console.log("Enviando:", formData);
     }
   };
 
+  const inputStyles = "w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-600 outline-none transition-colors text-neutral-700 placeholder-neutral-400 bg-white";
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow-sm mt-10 space-y-4">
-      <h1 className="text-4xl-h1">Crear cuenta</h1>
-      <p className="text-base-body">Crea una nueva cuenta para comenzar</p>
+    <div className="flex justify-center items-center min-h-screen bg-gray-500/50">
+      {/* CORRECCIÓN 1: Cambiado max-w-[500px] por max-w-lg (512px) */}
+      <div className="relative w-full max-w-lg p-8 bg-white rounded-xl shadow-xl m-4">
+        
+        <button className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600 text-2xl font-bold">
+          &times;
+        </button>
 
+        <div className="mb-6">
+          {/* CORRECCIÓN 2: Cambiado el texto variable manual por 'text-3xl' */}
+          <h1 className="text-3xl font-bold text-primary-50 mb-2">
+            Crear Cuenta
+          </h1>
+          {/* CORRECCIÓN 3: Cambiado el texto variable manual por 'text-base' */}
+          <p className="text-base text-neutral-500">
+            Crea una nueva cuenta para comenzar
+          </p>
+        </div>
 
-      <InputField 
-        label="Usuario"
-        name="name"
-        type="text"
-        placeholder="Tu nombre"
-        value={formData.name}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={errors.name}
-      />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <InputField 
+            id="name"
+            label="Usuario"
+            name="name"
+            type="text"
+            placeholder="Tu nombre de usuario"
+            value={formData.name}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.name}
+            className={inputStyles} 
+          />
 
+          <InputField 
+            id="email"
+            label="Correo"
+            name="email"
+            type="email"
+            placeholder="Tu correo electrónico"
+            value={formData.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.email}
+            className={inputStyles}
+          />
 
-      <InputField 
-        label="Correo Electrónico"
-        name="email"
-        type="email"
-        placeholder="ejemplo@correo.com"
-        value={formData.email}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={errors.email}
-      />
+          <InputField 
+            id="password"
+            label="Contraseña"
+            name="password"
+            type="password"
+            placeholder="Mínimo 6 caracteres"
+            value={formData.password}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.password}
+            className={inputStyles}
+          />
 
-      <InputField 
-        label="Contraseña"
-        name="password"
-        type="password"
-        value={formData.password}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={errors.password}
-      />
+          <InputField 
+            id="passwordRepeat"
+            label="Repetir contraseña"
+            name="passwordRepeat"
+            type="password"
+            placeholder="Repite tu contraseña"
+            value={formData.passwordRepeat}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.passwordRepeat}
+            className={inputStyles}
+          />
 
-      <InputField 
-        label="Repetir contraseña"
-        name="password"
-        type="password"
-        value={formData.passwordRepeat}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={errors.passwordRepeat}
-      />
+          <div className="flex gap-4 mt-8 pt-2">
+            <Button 
+                type="button" 
+                className="w-full py-3 bg-white border border-neutral-300 text-neutral-600 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer"
+            >
+              Cancelar
+            </Button>
 
-       <Button type="submit" className="bg-color-primary-50">
-        Registrarse
-      </Button>
-
-      <Button type="submit" className="">
-        Cancelar
-      </Button>
-    </form>
+            <Button 
+                type="submit" 
+                className="w-full py-3 bg-primary-50 text-white rounded-lg hover:opacity-90 transition-opacity shadow-md cursor-pointer"
+            >
+              Registrarse
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
