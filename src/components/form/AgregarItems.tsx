@@ -1,5 +1,8 @@
 import { useState, type ChangeEvent, type FocusEvent } from "react";
 import Select from "./Select";
+import InputField from "./InputField";
+import { validateField } from "../../utils/regex";
+import Button from "./Button";
 
 
 interface DatosFormularioProps {
@@ -78,7 +81,7 @@ export default function FormularioLibros() {
 
     const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        const error = regexLibros(name, value);
+        const error = validateField(name, value);
         setErrors((prev) => ({ ...prev, [name]: error }));
     };
 
@@ -89,14 +92,14 @@ export default function FormularioLibros() {
         console.log("Libro creado");
 
         const newErrors = {
-            tipo: regexTipo("tipo", datosFormulario.tipo),
-            titulo: regexLibros("titulo", datosFormulario.titulo),
-            autor: regexLibros("autor", datosFormulario.autor),
-            genero: regexLibros("genero", datosFormulario.genero),
-            fecha_fin: regexLibros("fecha_fin", datosFormulario.fecha_fin),
-            puntuacion: regexLibros("puntuacion", datosFormulario.puntuacion.toString()),
-            reseña: regexLibros("reseña", datosFormulario.reseña),
-            imagen: regexLibros("imagen", datosFormulario.imagen)
+            tipo: validateField("tipo", datosFormulario.tipo),
+            titulo: validateField("titulo", datosFormulario.titulo),
+            autor: validateField("autor", datosFormulario.autor),
+            genero: validateField("genero", datosFormulario.genero),
+            fecha_fin: validateField("fecha_fin", datosFormulario.fecha_fin),
+            puntuacion: validateField("puntuacion", datosFormulario.puntuacion.toString()),
+            reseña: validateField("reseña", datosFormulario.reseña),
+            imagen: validateField("imagen", datosFormulario.imagen)
         };
         setErrors(newErrors);
 
