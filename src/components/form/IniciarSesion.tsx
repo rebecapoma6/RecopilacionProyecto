@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FocusEvent, type FormEvent} from "react";
 import InputFieldClase from "./InputField";
 import Button from "./Button";
-
+import { validateField } from "../../utils/regex";
 
 
 interface LoginDataProps {
