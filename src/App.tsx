@@ -7,9 +7,10 @@ import Profile from './pages/Profile';
 import SignInPage from './pages/singInPage';
 import Registro from './components/form/Registro';
 // import ProductosSupabase from './pages/ProductosSupabase';
-import RecuperarPass from './pages/RecuperarPass';
+//import RecuperarPass from './pages/RecuperarPass';
 import AgregarItems from './pages/AgregarItems';
 import './App.css';
+import PageRecuperarPass from './pages/PageRecuperarPass';
 
 function App() {
   return (
@@ -23,8 +24,10 @@ function App() {
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/registro" element={<Registro />} />
           {/* <Route path="/productos-supabase" element={<ProductosSupabase />} /> */}
-          <Route path="/recuperar-pass" element={<RecuperarPass />} />
+          {/* <Route path="/recuperar-pass" element={<RecuperarPass />} /> */}
           <Route path="/agregar-items" element={<AgregarItems />} />
+          <Route path="/recuperarPass" element={<PageRecuperarPass/>} />
+  
         </Routes>
       </main>
       <div className="footer-container">
