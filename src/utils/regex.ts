@@ -12,12 +12,12 @@ export const validateField = (name: string, value: string) => {
     case "contrasenia":
       if (value.length < 6) return "Mínimo 6 caracteres";
       return "";
-    
+
     // En tu archivo de validaciones
-case "email":
-  if (!value.trim()) return "El correo es obligatorio";
-  if (!/\S+@\S+\.\S+/.test(value)) return "El formato del correo no es válido";
-  return "";
+    case "email":
+      if (!value.trim()) return "El correo es obligatorio";
+      if (!/\S+@\S+\.\S+/.test(value)) return "El formato del correo no es válido";
+      return "";
 
     case "titulo":
       if (!value.trim()) return "El titulo es obligatorio";
