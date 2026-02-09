@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Button from '../form/Button';
+import Button from '../components/form/Button';
 
 export default function Navbar() {
   return (
