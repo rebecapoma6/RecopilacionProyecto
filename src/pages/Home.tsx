@@ -1,20 +1,12 @@
 import { Link } from 'react-router-dom';
 import Button from '../components/form/Button';
 
-export default function Navbar() {
+export default function Home() {
   return (
-    <nav className="bg-blue-500 p-4 text-white flex justify-between items-center shadow-md">
-      <Link to="/" className="text-xl font-bold">Mi App</Link>
-      <div className="flex items-center space-x-4">
-        <Link to="/products" className="hover:underline">Productos</Link>
-        <Link to="/profile" className="hover:underline">Perfil</Link>
-        <Link to="/sign-in">
-          <Button variant="secondary">Iniciar Sesión</Button>
-        </Link>
-        <Link to="/registro">
-          <Button variant="primary">Registro</Button>
-        </Link>
-      </div>
-    </nav>
+    <div className="text-center py-10">
+      <h1 className="text-3xl font-bold mb-4">Bienvenido a StoryPlay</h1>
+      <p>Esta es la página principal. Navega usando la barra superior.</p>
+      {}
+    </div>
   );
 }

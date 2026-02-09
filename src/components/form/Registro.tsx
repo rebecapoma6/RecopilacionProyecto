@@ -79,7 +79,6 @@ export default function FormularioRegistro() {
     if (!hasErrors) {
       console.log("✅ Formulario enviado correctamente:", formData);
       alert("¡Registro exitoso!");
-      // Aquí iría tu lógica de registro (Supabase, Firebase, API, etc.)
     }
   };
 

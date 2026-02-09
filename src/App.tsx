@@ -14,7 +14,8 @@ import './App.css';
 function App() {
   return (
     <div className="app-container flex flex-col min-h-screen">
- 
+      <Navbar />
+      <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
@@ -25,8 +26,7 @@ function App() {
           <Route path="/recuperar-pass" element={<RecuperarPass />} />
           <Route path="/agregar-items" element={<AgregarItems />} />
         </Routes>
-
-
+      </main>
       <div className="footer-container">
         <Footer />
       </div>

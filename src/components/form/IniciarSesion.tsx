@@ -1,100 +1,87 @@
-import { useState, type ChangeEvent, type FocusEvent, type FormEvent} from "react";
-import InputFieldClase from "./InputField";
-import Button from "./Button";
-import { validateField } from "../../utils/regex";
+import { useState } from 'react';
+import InputField from '../form/InputField';
+import Select from '../form/Select';
+import Button from '../form/Button';
+import Navbar from '../navbar/Navbar';
+import './index.css';  
 
+export default function Profile() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: '',
+  });
+  const [errors, setErrors] = useState({});
 
-interface LoginDataProps {
-    username: string;
-    password: string;
-}
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-interface LoginErrorProps{
-    username?: string;
-    password?: string;
-}
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Datos modificados:', formData);
+  };
 
-export default function LoginForm(){
-    //1. Estado para los datos
-    const[formData, setFormData] = useState<LoginDataProps>({
-        username: "",
-        password: "",        
-    });
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-lg p-8 bg-white rounded-2xl shadow-xl m-4">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Modificar Datos</h1>
+          <p className="text-gray-500">Completa tus datos para actualizar</p>
+        </div>
 
-     // 2. Estado para los errores
-    const [errors, setErrors] = useState<LoginErrorProps>({
-        username:"",
-        password:"",
-    });
-
-    // Actualiza el valor del campo mientras el usuario escribe.
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const{name, value } = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
-        setErrors((prev) => ({...prev, [name]: ""}));
-    };
-
-     // Valida el campo cuando el usuario sale de él (pierde el foco).
-    const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        const error = validateField(name, value);
-        setErrors((prev) => ({...prev, [name]: error}));
-    }
-
-    // Manejo del envío del formulario
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-
-        // Validamos todo de golpe antes de enviar
-        const newErrors = {
-            email: validateField("email", formData.username),
-            password: validateField("password", formData.password),
-        };
-        setErrors(newErrors);
-
-        // Si no hay errores (ningún string tiene texto), procedemos
-        const hasErrors = Object.values(newErrors).some(Boolean);
-
-        if(!hasErrors){
-            alert("¡Inicio de sesión exitoso! 🔓");
-        }
-
-    };
-
-    return(
-        <form onSubmit={handleSubmit} className="max-w-sm mx-auto space-y-4">
-            <h2 className="text-4xl-h1 font-bold text-center mb-4">Iniciar Sesión</h2>
-            <p className="text-base-body text-center mb-4">Ingresa las credenciales para acceder</p>
-
-            <InputFieldClase
-            label="Usuario"
-            name="usuario"
-            type="text"
-            value={formData.username}
-            error={errors.username}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <InputField
+            label="Nombre"
+            id="name"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
-            onBlur={handleBlur}
-            autoComplete="off"
-            placeholder="Tu nombre de usuario"            
-            ></InputFieldClase>
-
-            <InputFieldClase
+          />
+          <InputField
+            label="Email"
+            id="email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <InputField
             label="Contraseña"
-            name="password"
+            id="password"
             type="password"
+            name="password"
             value={formData.password}
-            error={errors.password}
             onChange={handleChange}
-            onBlur={handleBlur}
-            autoComplete="off"
-            placeholder="Tu contraseña"    
-            ></InputFieldClase>
+          />
+          <Select
+            label="Rol"
+            name="role"
+            options={[
+              { value: 'user', label: 'Usuario' },
+              { value: 'admin', label: 'Admin' },
+            ]}
+            value={formData.role}
+            onChange={handleChange}
+          />
+          <div className="flex gap-4 pt-6">
+            <Button
+              type="button"
+              className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition"
+            >
+              Cancelar
+            </Button>
 
-            <Button type="submit">Cancelar</Button>
-            <Button type="submit">Iniciar Sesión</Button>
-            
+            <Button
+              type="submit"
+              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+            >
+              Guardar Cambios
+            </Button>
+          </div>
         </form>
-    )
-
-
+      </div>
+    </div>
+  );
 }
