@@ -64,9 +64,10 @@ export default function RecuperarPass() {
     };
 
     return (
-        <div className="p-4 border rounded-lg shadow-sm bg-white">
+        <>
+        <div className="p-3 rounded-lg shadow-sm bg-white">
             {!enviado ? (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3">
                     <h2 className="text-xl font-bold">Recuperar Acceso</h2>
                     <InputFieldClase
                         label="Correo Electrónico"
@@ -77,11 +78,7 @@ export default function RecuperarPass() {
                         onChange={handleChange}
                         error={errors.email}
                     />
-                    <Button type="submit" className="w-full bg-primary-700 hover:bg-primary-600   text-white
-          font-medium
-          py-2
-          rounded-md
-          transition">
+                    <Button type="submit" className="w-full bg-primary-700 hover:bg-primary-600  text-white font-medium py-2 rounded-md transition">
                         Enviar Email
                     </Button>
                 </form>
@@ -94,5 +91,6 @@ export default function RecuperarPass() {
                 </div>
             )}
         </div>
+        </>
     );
 }
