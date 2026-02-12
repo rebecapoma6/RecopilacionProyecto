@@ -3,6 +3,7 @@ import Select from "./Select";
 import InputField from "./InputField";
 import { validateField } from "../../utils/regex";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 
 interface DatosFormularioProps {
@@ -27,7 +28,9 @@ interface ErrorsProps {
     imagen: string;
 }
 
-export default function FormularioLibros() {
+export default function AgregarItems() {
+
+    const navigate = useNavigate();
 
     const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
         tipo: "",
@@ -229,7 +232,8 @@ export default function FormularioLibros() {
                 </Button>
 
                 <Button
-                    type="submit"
+                    type="button"
+                    onClick={() => navigate("/")}
                     className="
           w-full
           bg-neutral-400
@@ -243,6 +247,8 @@ export default function FormularioLibros() {
                 >
                     Cancelar
                 </Button>
+
+                
             </form>
         </div>
     );

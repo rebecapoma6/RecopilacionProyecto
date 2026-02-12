@@ -1,70 +1,79 @@
 import { useState } from 'react';
 import InputField from '../form/InputField';
-import Select from '../form/Select';
 import Button from '../form/Button';
-import Navbar from '../navbar/Navbar';
-import './index.css';  
+import '../../index.css';  
+import { validateField } from '../../utils/regex';
 
-export default function Profile() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: '',
+interface DatosFormularioProps {
+  email: string,
+  password: string
+}
+
+interface ErrorsProps{
+  email: string,
+  password: string
+}
+
+export default function IniciarSesion() {
+  const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
+    email: "",
+    password: ""
   });
-  const [errors, setErrors] = useState({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [errors, setErrors] = useState<ErrorsProps>({
+    email: "",
+    password: ""
+  });
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDatosFormulario({ ...datosFormulario, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Datos modificados:', formData);
+    console.log('Datos de inicio de sesión:', datosFormulario);
+  
+
+  const newErrors = {
+    email: validateField("email", datosFormulario.email),
+    password: validateField("password", datosFormulario.password)
   };
+    setErrors(newErrors);
+  
+          const hasErrors = Object.values(newErrors).some(Boolean);
+          if (!hasErrors) {
+              alert("Formulario válido ✅");
+          }
+          };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-lg p-8 bg-white rounded-2xl shadow-xl m-4">
+    <div className="flex justify-center items-center bg-gray-100">
+      <div className="w-full max-w-lg p-8 bg-white rounded-2xl shadow-xl m-15">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Modificar Datos</h1>
-          <p className="text-gray-500">Completa tus datos para actualizar</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Iniciar Sesión</h1>
+          <p className="text-gray-500">Ingresa tus credenciales para acceder</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <InputField
-            label="Nombre"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
           <InputField
             label="Email"
             id="email"
             type="email"
             name="email"
-            value={formData.email}
+            value={datosFormulario.email}
             onChange={handleChange}
           />
+          {errors.email}
           <InputField
             label="Contraseña"
             id="password"
             type="password"
             name="password"
-            value={formData.password}
+            value={datosFormulario.password}
             onChange={handleChange}
           />
-          <Select
-            label="Rol"
-            name="role"
-            options={[
-              { value: 'user', label: 'Usuario' },
-              { value: 'admin', label: 'Admin' },
-            ]}
-            value={formData.role}
-            onChange={handleChange}
-          />
+          {errors.password}
           <div className="flex gap-4 pt-6">
             <Button
               type="button"
@@ -77,7 +86,7 @@ export default function Profile() {
               type="submit"
               className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
             >
-              Guardar Cambios
+              Iniciar Sesión
             </Button>
           </div>
         </form>

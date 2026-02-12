@@ -3,40 +3,46 @@ import { validateField } from "../../utils/regex";
 import Button from "./Button";
 import InputField from "./InputField";
 
-interface FormData {
-  name: string;
-  surnames: string;
+interface DatosFormularioProps {
+  nombre: string;
+  apellidos: string;
   email: string;
   password: string;
   passwordRepeat: string;
 }
 
-interface Errors {
-  name?: string;
-  surnames?: string;
-  email?: string;
-  password?: string;
-  passwordRepeat?: string;
+interface ErrorsProps {
+  nombre: string;
+  apellidos: string;
+  email: string;
+  password: string;
+  passwordRepeat: string;
 }
 
-export default function FormularioRegistro() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    surnames: "",
+export default function Registro() {
+  const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
+    nombre: "",
+    apellidos: "",
     email: "",
     password: "",
     passwordRepeat: "",
   });
 
-  const [errors, setErrors] = useState<Errors>({});
+  const [errors, setErrors] = useState<ErrorsProps>({
+    nombre: "",
+    apellidos: "",
+    email: "",
+    password: "",
+    passwordRepeat: ""
+  });
 
   // Manejar cambios en los inputs
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setDatosFormulario((prev) => ({ ...prev, [name]: value }));
 
     // Limpiar error del campo mientras el usuario escribe
-    if (errors[name as keyof Errors]) {
+    if (errors[name as keyof ErrorsProps]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
@@ -46,7 +52,7 @@ export default function FormularioRegistro() {
     const { name, value } = e.target;
 
     if (name === "passwordRepeat") {
-      if (value !== formData.password) {
+      if (value !== datosFormulario.password) {
         setErrors((prev) => ({ ...prev, passwordRepeat: "Las contraseñas no coinciden" }));
       } else {
         setErrors((prev) => ({ ...prev, passwordRepeat: "" }));
@@ -62,12 +68,12 @@ export default function FormularioRegistro() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const newErrors: Errors = {
-      name: validateField("name", formData.name),
-      surnames: validateField("surnames", formData.surnames),
-      email: validateField("email", formData.email),
-      password: validateField("password", formData.password),
-      passwordRepeat: formData.password !== formData.passwordRepeat 
+    const newErrors = {
+      nombre: validateField("nombre", datosFormulario.nombre),
+      apellidos: validateField("apellidos", datosFormulario.apellidos),
+      email: validateField("email", datosFormulario.email),
+      password: validateField("password", datosFormulario.password),
+      passwordRepeat: datosFormulario.password !== datosFormulario.passwordRepeat 
         ? "Las contraseñas no coinciden" 
         : "",
     };
@@ -77,42 +83,42 @@ export default function FormularioRegistro() {
     const hasErrors = Object.values(newErrors).some((error) => error !== "");
 
     if (!hasErrors) {
-      console.log("✅ Formulario enviado correctamente:", formData);
+      console.log("✅ Formulario enviado correctamente:", datosFormulario);
       alert("¡Registro exitoso!");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-lg p-8 bg-white rounded-2xl shadow-xl m-4">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Crear Cuenta</h1>
+    <div className="flex justify-center items-center bg-gray-100">
+      <div className="w-full max-w-md p-3 bg-white rounded-2xl shadow-xl">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">Crear Cuenta</h1>
           <p className="text-gray-500">Completa tus datos para registrarte</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-2">
           <InputField
-            id="name"
+            id="nombre"
             label="Nombre"
-            name="name"
+            name="nombre"
             type="text"
             placeholder="Tu nombre"
-            value={formData.name}
+            value={datosFormulario.nombre}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.name}
+            error={errors.nombre}
           />
 
           <InputField
-            id="surnames"
+            id="apellidos"
             label="Apellidos"
-            name="surnames"
+            name="apellidos"
             type="text"
             placeholder="Tus apellidos"
-            value={formData.surnames}
+            value={datosFormulario.apellidos}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.surnames}
+            error={errors.apellidos}
           />
 
           <InputField
@@ -121,7 +127,7 @@ export default function FormularioRegistro() {
             name="email"
             type="email"
             placeholder="ejemplo@correo.com"
-            value={formData.email}
+            value={datosFormulario.email}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.email}
@@ -133,7 +139,7 @@ export default function FormularioRegistro() {
             name="password"
             type="password"
             placeholder="Mínimo 6 caracteres"
-            value={formData.password}
+            value={datosFormulario.password}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.password}
@@ -145,7 +151,7 @@ export default function FormularioRegistro() {
             name="passwordRepeat"
             type="password"
             placeholder="Repite tu contraseña"
-            value={formData.passwordRepeat}
+            value={datosFormulario.passwordRepeat}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.passwordRepeat}
@@ -154,14 +160,14 @@ export default function FormularioRegistro() {
           <div className="flex gap-4 pt-6">
             <Button
               type="button"
-              className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition"
+              className="w-full py-1 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition"
             >
               Cancelar
             </Button>
 
             <Button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+              className="w-full py-1 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
             >
               Registrarse
             </Button>

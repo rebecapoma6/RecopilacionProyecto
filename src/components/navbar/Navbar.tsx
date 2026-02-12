@@ -8,7 +8,7 @@ export default function Navbar() {
       <div className="flex items-center space-x-4">
         <Link to="/products" className="hover:underline">Productos</Link>
         <Link to="/profile" className="hover:underline">Perfil</Link>
-        <Link to="/sign-in">
+        <Link to="/iniciarSesion">
           <Button variant="secondary">Iniciar Sesión</Button>
         </Link>
         <Link to="/registro">
