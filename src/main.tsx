@@ -1,16 +1,16 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom'; // Agrega este import
-import './index.css';
-import App from './App.tsx';
+// import { StrictMode } from 'react';
+// import { createRoot } from 'react-dom/client';
+// import { BrowserRouter } from 'react-router-dom'; // Agrega este import
+// import './index.css';
+// import App from './App.tsx';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
-);
+// createRoot(document.getElementById('root')!).render(
+//   <StrictMode>
+//     <BrowserRouter>
+//       <App />
+//     </BrowserRouter>
+//   </StrictMode>,
+// );
 
 
 
@@ -24,3 +24,16 @@ createRoot(document.getElementById('root')!).render(
 //     <App />
 //   </StrictMode>,
 // )
+
+
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
+
+// Eliminamos el import de BrowserRouter y el componente que envolvía a <App />
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
