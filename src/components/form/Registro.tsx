@@ -3,50 +3,58 @@ import { validateField } from "../../utils/regex";
 import Button from "./Button";
 import InputField from "./InputField";
 
-interface FormData {
-  name: string;
-  surnames: string;
+import { SupabaseUserRepository } from "../../database/supabase/SupabaseUserRepository";
+
+
+const userRepository = new SupabaseUserRepository();
+
+interface DatosFormularioProps {
+ username: string; 
   email: string;
   password: string;
   passwordRepeat: string;
 }
 
-interface Errors {
-  name?: string;
-  surnames?: string;
-  email?: string;
-  password?: string;
-  passwordRepeat?: string;
+interface ErrorsProps {
+ username: string;
+  email: string;
+  password: string;
+  passwordRepeat: string;
 }
 
-export default function FormularioRegistro() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    surnames: "",
+export default function Registro() {
+  const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
+   username: "",
     email: "",
     password: "",
     passwordRepeat: "",
   });
 
-  const [errors, setErrors] = useState<Errors>({});
+  const [errors, setErrors] = useState<ErrorsProps>({
+   username: "",
+    email: "",
+    password: "",
+    passwordRepeat: ""
+  });
 
-  // Manejar cambios en los inputs
+  const [loading, setLoading] = useState(false);
+
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setDatosFormulario((prev) => ({ ...prev, [name]: value }));
 
-    // Limpiar error del campo mientras el usuario escribe
-    if (errors[name as keyof Errors]) {
+    if (errors[name as keyof ErrorsProps]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  // Validación al salir del campo (onBlur)
+  
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "passwordRepeat") {
-      if (value !== formData.password) {
+      if (value !== datosFormulario.password) {
         setErrors((prev) => ({ ...prev, passwordRepeat: "Las contraseñas no coinciden" }));
       } else {
         setErrors((prev) => ({ ...prev, passwordRepeat: "" }));
@@ -54,74 +62,91 @@ export default function FormularioRegistro() {
       return;
     }
 
-    const error = validateField(name, value);
+   
+    const error = validateField(name === "username" ? "nombre" : name, value); 
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
   // Envío del formulario
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const newErrors: Errors = {
-      name: validateField("name", formData.name),
-      surnames: validateField("surnames", formData.surnames),
-      email: validateField("email", formData.email),
-      password: validateField("password", formData.password),
-      passwordRepeat: formData.password !== formData.passwordRepeat 
+    const newErrors = {
+     username: validateField("nombre", datosFormulario.username), 
+      email: validateField("email", datosFormulario.email),
+      password: validateField("password", datosFormulario.password),
+      passwordRepeat: datosFormulario.password !== datosFormulario.passwordRepeat 
         ? "Las contraseñas no coinciden" 
         : "",
     };
 
     setErrors(newErrors);
-
     const hasErrors = Object.values(newErrors).some((error) => error !== "");
 
-    if (!hasErrors) {
-      console.log("✅ Formulario enviado correctamente:", formData);
-      alert("¡Registro exitoso!");
+    if (hasErrors) return;
+
+    setLoading(true);
+
+    try {
+      const dataToSend = {
+        email: datosFormulario.email,
+        password: datosFormulario.password,
+        username: datosFormulario.username, 
+        role: 'user'
+      };
+
+      const { data, error } = await userRepository.createUser(dataToSend);
+
+      if (error) {
+        alert("Error al registrar: " + (error.message || "Error desconocido"));
+        console.error(error);
+      } else {
+        console.log("✅username registrado:", data);
+        alert("¡Registro exitoso!");
+       
+      }
+
+    } catch (err) {
+      console.error("Error crítico:", err);
+      alert("Ocurrió un error inesperado.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-lg p-8 bg-white rounded-2xl shadow-xl m-4">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Crear Cuenta</h1>
-          <p className="text-gray-500">Completa tus datos para registrarte</p>
+    
+    <div className="flex justify-center items-center min-h-screen bg-neutral-100 font-sf-pro">
+      
+      <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl">
+        <div className="text-left mb-6">
+         
+          <h1 className="text-2xl font-bold text-primary-50 mb-1">Crear Cuenta</h1>
+          <p className="text-neutral-500 text-sm">Crea una nueva cuenta para comenzar</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          
           <InputField
-            id="name"
-            label="Nombre"
-            name="name"
+            id="username"
+            label="username"
+            name="username"
             type="text"
-            placeholder="Tu nombre"
-            value={formData.name}
+            placeholder="Tu nombre deusername"
+            value={datosFormulario.username}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.name}
-          />
-
-          <InputField
-            id="surnames"
-            label="Apellidos"
-            name="surnames"
-            type="text"
-            placeholder="Tus apellidos"
-            value={formData.surnames}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.surnames}
+            error={errors.username}
+           
           />
 
           <InputField
             id="email"
-            label="Correo Electrónico"
+            label="Correo"
             name="email"
             type="email"
-            placeholder="ejemplo@correo.com"
-            value={formData.email}
+            placeholder="Tu correo electrónico"
+            value={datosFormulario.email}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.email}
@@ -132,8 +157,8 @@ export default function FormularioRegistro() {
             label="Contraseña"
             name="password"
             type="password"
-            placeholder="Mínimo 6 caracteres"
-            value={formData.password}
+            placeholder="contraseña"
+            value={datosFormulario.password}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.password}
@@ -141,29 +166,31 @@ export default function FormularioRegistro() {
 
           <InputField
             id="passwordRepeat"
-            label="Repetir Contraseña"
+            label="Repetir contraseña"
             name="passwordRepeat"
             type="password"
-            placeholder="Repite tu contraseña"
-            value={formData.passwordRepeat}
+            placeholder="contraseña"
+            value={datosFormulario.passwordRepeat}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.passwordRepeat}
           />
 
-          <div className="flex gap-4 pt-6">
+          <div className="flex gap-4 pt-4">
             <Button
               type="button"
-              className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition"
+              
+              className="w-full py-2 bg-white border border-neutral-300 text-neutral-600 font-medium rounded-lg hover:bg-neutral-100 transition"
             >
               Cancelar
             </Button>
 
             <Button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+              disabled={loading}
+              className={`w-full py-2 text-white font-medium rounded-lg transition ${loading ? 'bg-primary-400' : 'bg-primary-50 hover:bg-primary-700'}`}
             >
-              Registrarse
+              {loading ? "Registrando..." : "Registrarse"}
             </Button>
           </div>
         </form>
