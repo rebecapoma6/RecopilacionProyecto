@@ -14,6 +14,9 @@ export default function Navbar() {
         <Link to="/registro">
           <Button variant="primary">Registro</Button>
         </Link>
+                <Link to="/modificarDatos">
+          <Button variant="primary">Editar perfil</Button>
+        </Link>
         <Link to="/recuperarPass">
           <Button variant="primary">Recuperar contraseña</Button>
         </Link>
