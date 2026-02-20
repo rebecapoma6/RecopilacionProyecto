@@ -4,6 +4,8 @@ import Button from "./Button";
 import InputField from "./InputField";
 import { SupabaseUserRepository } from "../../database/supabase/SupabaseUserRepository";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
+import toast from "react-hot-toast";
 
 
 const userRepository = new SupabaseUserRepository();
@@ -24,6 +26,7 @@ interface ErrorsProps {
 
 export default function Registro() {
   const navigate = useNavigate();
+  const setSession = useAuthStore(state => state.setSession);
   const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
     username: "",
     email: "",
@@ -99,17 +102,16 @@ export default function Registro() {
       const { data, error } = await userRepository.createUser(dataToSend);
 
       if (error) {
-        alert("Error al registrar: " + (error.message || "Error desconocido"));
-        console.error(error);
-      } else {
-        console.log("✅username registrado:", data);
-        alert("¡Registro exitoso!");
-
+        toast.error("Error al registrar: " + error.message);
+      } else if (data) {
+        //Guardamos la sesión en el store de Zustand
+        setSession(data);
+        toast.success(`¡Bienvenido ${data.profile?.username}!`);
+        navigate("/");
       }
 
     } catch (err) {
-      console.error("Error crítico:", err);
-      alert("Ocurrió un error inesperado.");
+      toast.error("Ocurrió un error inesperado.");
     } finally {
       setLoading(false);
     }
