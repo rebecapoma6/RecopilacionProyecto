@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createUserRepository } from '../../dataBase/repositories'; 
 import { useAuthStore } from '../../store/useAuthStore'; 
 import toast, { Toaster } from 'react-hot-toast'; 
@@ -90,7 +90,6 @@ export default function IniciarSesion() {
 
   return (
     <div className="flex justify-center items-center bg-gray-100 min-h-screen">
-     
       <Toaster position="top-center" /> 
 
       <div className="w-full max-w-lg p-8 bg-white rounded-2xl shadow-xl m-15">
@@ -100,6 +99,7 @@ export default function IniciarSesion() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* EMAIL */}
           <div>
             <InputField
                 label="Email"
@@ -109,10 +109,10 @@ export default function IniciarSesion() {
                 value={datosFormulario.email}
                 onChange={handleChange}
             />
-            
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
+          {/* PASSWORD */}
           <div>
             <InputField
                 label="Contraseña"
@@ -123,15 +123,26 @@ export default function IniciarSesion() {
                 onChange={handleChange}
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+            
+            {/* ENLACE DE RECUPERACIÓN - Ahora bien ubicado */}
+            <div className="flex justify-end mt-1">
+              <Link 
+                to="/recuperarPass" 
+                className="text-xs text-blue-600 hover:text-blue-800 transition font-medium"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
           </div>
 
+          {/* BOTONES */}
           <div className="flex gap-4 pt-6">
             <Button
               type="button"
               onClick={() => navigate("/")} 
               className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition cursor-pointer"
             >
-              Cancelar
+              Volver
             </Button>
 
             <Button
@@ -143,6 +154,19 @@ export default function IniciarSesion() {
             >
               {loading ? 'Entrando...' : 'Iniciar Sesión'}
             </Button>
+          </div>
+
+          {/* SECCIÓN DE REGISTRO INTEGRADA */}
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+            <p className="text-gray-600">
+              ¿Todavía no eres parte de StoryPlay?
+            </p>
+            <Link 
+              to="/registro" 
+              className="inline-block mt-2 text-blue-600 font-bold hover:text-blue-800 hover:underline transition"
+            >
+              Crea tu cuenta ahora
+            </Link>
           </div>
         </form>
       </div>

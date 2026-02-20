@@ -3,36 +3,36 @@ import { validateField } from "../../utils/regex";
 import Button from "./Button";
 import InputField from "./InputField";
 import { SupabaseUserRepository } from "../../dataBase/supabase/SupabaseUserRepository";
-
-//import { SupabaseUserRepository } from "../../dataBase/supabase/SupabaseUserRepository";
+import { useNavigate } from "react-router-dom";
 
 
 const userRepository = new SupabaseUserRepository();
 
 interface DatosFormularioProps {
- username: string; 
+  username: string;
   email: string;
   password: string;
   passwordRepeat: string;
 }
 
 interface ErrorsProps {
- username: string;
+  username: string;
   email: string;
   password: string;
   passwordRepeat: string;
 }
 
 export default function Registro() {
+  const navigate = useNavigate();
   const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
-   username: "",
+    username: "",
     email: "",
     password: "",
     passwordRepeat: "",
   });
 
   const [errors, setErrors] = useState<ErrorsProps>({
-   username: "",
+    username: "",
     email: "",
     password: "",
     passwordRepeat: ""
@@ -40,7 +40,7 @@ export default function Registro() {
 
   const [loading, setLoading] = useState(false);
 
-  
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDatosFormulario((prev) => ({ ...prev, [name]: value }));
@@ -50,7 +50,7 @@ export default function Registro() {
     }
   };
 
-  
+
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -63,8 +63,8 @@ export default function Registro() {
       return;
     }
 
-   
-    const error = validateField(name === "username" ? "nombre" : name, value); 
+
+    const error = validateField(name === "username" ? "nombre" : name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
@@ -73,11 +73,11 @@ export default function Registro() {
     e.preventDefault();
 
     const newErrors = {
-     username: validateField("nombre", datosFormulario.username), 
+      username: validateField("nombre", datosFormulario.username),
       email: validateField("email", datosFormulario.email),
       password: validateField("password", datosFormulario.password),
-      passwordRepeat: datosFormulario.password !== datosFormulario.passwordRepeat 
-        ? "Las contraseñas no coinciden" 
+      passwordRepeat: datosFormulario.password !== datosFormulario.passwordRepeat
+        ? "Las contraseñas no coinciden"
         : "",
     };
 
@@ -92,7 +92,7 @@ export default function Registro() {
       const dataToSend = {
         email: datosFormulario.email,
         password: datosFormulario.password,
-        username: datosFormulario.username, 
+        username: datosFormulario.username,
         role: 'user'
       };
 
@@ -104,7 +104,7 @@ export default function Registro() {
       } else {
         console.log("✅username registrado:", data);
         alert("¡Registro exitoso!");
-       
+
       }
 
     } catch (err) {
@@ -116,18 +116,18 @@ export default function Registro() {
   };
 
   return (
-    
+
     <div className="flex justify-center items-center min-h-screen bg-neutral-100 font-sf-pro">
-      
+
       <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl">
         <div className="text-left mb-6">
-         
+
           <h1 className="text-2xl font-bold text-primary-50 mb-1">Crear Cuenta</h1>
           <p className="text-neutral-500 text-sm">Crea una nueva cuenta para comenzar</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          
+
           <InputField
             id="username"
             label="username"
@@ -138,7 +138,7 @@ export default function Registro() {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.username}
-           
+
           />
 
           <InputField
@@ -178,10 +178,17 @@ export default function Registro() {
           />
 
           <div className="flex gap-4 pt-4">
-            <Button
+            {/* <Button
               type="button"
               
               className="w-full py-2 bg-white border border-neutral-300 text-neutral-600 font-medium rounded-lg hover:bg-neutral-100 transition"
+            >
+              Cancelar
+            </Button> */}
+            <Button
+              type="button"
+              onClick={() => navigate("/")}
+              className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition cursor-pointer"
             >
               Cancelar
             </Button>
