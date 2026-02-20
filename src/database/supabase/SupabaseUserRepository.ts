@@ -90,4 +90,26 @@ export class SupabaseUserRepository implements UserRepository {
     const { error } = await supabase.auth.signOut();
     return { error };
   }
+
+  //ANGEL
+
+    async getCurrentUser() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    return { data: user, error };
+  }
+
+  async updateUser(updates: {
+    username?: string;
+    email?: string;
+    password?: string;
+  }) {
+    const payload: any = {};
+
+    if (updates.email) payload.email = updates.email;
+    if (updates.password) payload.password = updates.password;
+    if (updates.username) payload.data = { username: updates.username };
+
+    const { data, error } = await supabase.auth.updateUser(payload);
+    return { data, error };
+  }
 }

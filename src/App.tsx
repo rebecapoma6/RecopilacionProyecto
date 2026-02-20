@@ -49,6 +49,8 @@ import LandingLayout from './layouts/LandingLayout';
 import AuthLayout from './layouts/AuthLayout';
 import AppLayout from './layouts/AppLayout';
 
+//Componente 
+
 
 //Nuestras páginas actuales
 import HomePage from './pages/HomePage';
@@ -57,6 +59,7 @@ import RegistroPage from './pages/RegistroPage';
 import ProductosSupabase from './pages/ProductosSupabase';
 import AgregarItemsPage from "./pages/AgregarItemsPage";
 import PageRecuperarPassPage from './pages/RecuperarPassPage';
+import ModificarDatosPage from "./pages/ModificarDatosPage";
 // import PerfilUsuarioPage from './pages/PerfilUsuarioPage'; // Descomenta si ya existe
 
 import ProtectedRoute from "./router/ProtectedRoute";
@@ -97,6 +100,7 @@ const router = createBrowserRouter([
         children: [
           { path: "/products", element: <ProductosSupabase/> },
           { path: "/agregar-items", element:<AgregarItemsPage/>},
+          { path: "/modificarDatos", element: <ModificarDatosPage/>}
         ]
       }
     ]
