@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../form/Button';
 import { useAuthStore } from '../../store/useAuthStore';
-import { createUserRepository } from '../../dataBase/repositories';
+import { createUserRepository } from '../../database/repositories';
 import { Moon } from 'lucide-react';
 
 export default function Navbar() {

@@ -2,7 +2,7 @@ import { useState, type ChangeEvent, type FocusEvent, type FormEvent } from "rea
 import { validateField } from "../../utils/regex";
 import Button from "./Button";
 import InputField from "./InputField";
-import { SupabaseUserRepository } from "../../dataBase/supabase/SupabaseUserRepository";
+import { SupabaseUserRepository } from "../../database/supabase/SupabaseUserRepository";
 import { useNavigate } from "react-router-dom";
 
 
