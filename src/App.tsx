@@ -100,7 +100,7 @@ const router = createBrowserRouter([
         children: [
           { path: "/products", element: <ProductosSupabase/> },
           { path: "/agregar-items", element:<AgregarItemsPage/>},
-          { path: "/modificarDatos", element: <ModificarDatosPage/>}
+          { path: "/modificar-datos", element: <ModificarDatosPage/>}
         ]
       }
     ]

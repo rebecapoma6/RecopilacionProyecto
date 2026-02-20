@@ -18,24 +18,6 @@ export default function Navbar() {
     }
 
   return (
-    // <nav className="bg-blue-500 p-4 text-white flex justify-between items-center shadow-md">
-    //   <Link to="/" className="text-xl font-bold">StoryPlay</Link>
-    //   <div className="flex items-center space-x-4">
-    //     <Link to="/products" className="hover:underline">Productos</Link>
-    //     <Link to="/profile" className="hover:underline">Perfil</Link>
-    //     <Link to="/iniciarSesion">
-    //       <Button variant="secondary">Iniciar Sesión</Button>
-    //     </Link>
-    //     <Link to="/registro">
-    //       <Button variant="primary">Registro</Button>
-    //     </Link>
-    //     <Link to="/recuperarPass">
-    //       <Button variant="primary">Recuperar contraseña</Button>
-    //     </Link>
-    //   </div>
-    // </nav>
-
-
     <nav className="bg-blue-500 p-4 text-white flex justify-between items-center shadow-md">
             <Link to="/" className="text-xl font-bold">StoryPlay</Link>
 
@@ -48,6 +30,7 @@ export default function Navbar() {
                         {/* <Link to="/products" className="hover:underline">Productos</Link> */}
                         <Link to="/profile" className="hover:underline">Perfil</Link>
                         {/* <Link to="/agregar-items" className="hover:underline">Añadir</Link> */}
+                        <Link to="/modificar-datos" className="hover:underline">Modificar Datos</Link>
                         <Button variant="secondary" onClick={handleLogout}>
                             Cerrar sesión
                         </Button>
@@ -58,13 +41,7 @@ export default function Navbar() {
                         <Link to="/iniciarSesion">
                             <Button variant="secondary">Iniciar Sesión</Button>
                         </Link>
-                        {/* <Link to="/registro">
-                            <Button variant="primary">Registro</Button>
-                        </Link> */}
-                        {/* <Link to="/recuperarPass" className="text-sm hover:underline">
-                            ¿Olvidaste tu clave?
-                        </Link> */}
-                        {/* <CambiarIdioma /> */}
+                        
                     </>
                 )}
                 
