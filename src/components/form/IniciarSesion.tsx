@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserRepository } from '../../database/repositories'; 
+import { createUserRepository } from '../../dataBase/repositories'; 
 import { useAuthStore } from '../../store/useAuthStore'; 
 import toast, { Toaster } from 'react-hot-toast'; 
 
