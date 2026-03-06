@@ -119,8 +119,7 @@ export default function Registro() {
 
   return (
 
-    <div className="flex justify-center items-center min-h-screen bg-neutral-100 font-sf-pro">
-
+<div className="w-screen h-screen flex justify-center items-center bg-neutral-100 font-sf-pro">
       <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl">
         <div className="text-left mb-6">
 
