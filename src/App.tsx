@@ -65,6 +65,7 @@ import ModificarDatosPage from "./pages/ModificarDatosPage";
 import ProtectedRoute from "./router/ProtectedRoute";
 import PublicRoute from "./router/PublicRoute";
 import AdminPage from "./pages/AdminPage";
+import AdminRoute from "./router/AdminRoute";
 
 
 
@@ -101,12 +102,25 @@ const router = createBrowserRouter([
         children: [
           { path: "/products", element: <ProductosSupabase/> },
            //{ path: "/products", element: <ProductosSupabase/> },
-          { path: "vistaAdmin", element:<AdminPage/>},
           { path: "/modificar-datos", element: <ModificarDatosPage/>}
         ]
       }
     ]
   },
+
+
+  {
+    element: <AdminRoute />, // Solo para Administradores
+    children: [
+      {
+        element: <AppLayout />, 
+        children: [
+          { path: "/vistaAdmin", element: <AdminPage/>},
+          // { path: "/estadisticas", element: <GraficoPage/> }
+        ]
+      }
+    ]
+  }
 
 
 
