@@ -5,9 +5,9 @@ import { createUserRepository } from '../../database/repositories';
 import { Moon } from 'lucide-react';
 
 export default function Navbar() {
-   const { isAuthenticated, clearSession } = useAuthStore();
+   const { isAuthenticated,isAdmin, clearSession } = useAuthStore();
     const userRepository = createUserRepository();
-
+    
     const navigate = useNavigate();
     const handleLogout = async () => {
         const { error } = await userRepository.logout()
@@ -31,6 +31,9 @@ export default function Navbar() {
                         <Link to="/profile" className="hover:underline">Perfil</Link>
                         {/* <Link to="/agregar-items" className="hover:underline">Añadir</Link> */}
                         <Link to="/modificar-datos" className="hover:underline">Modificar Datos</Link>
+                          {isAdmin && (
+                        <Link to="/profile">Soy Administrador</Link>
+                    )}
                         <Button variant="secondary" onClick={handleLogout}>
                             Cerrar sesión
                         </Button>

@@ -5,6 +5,20 @@ import { supabase } from "./Client";
 
 export class SupabaseUserRepository implements UserRepository {
 
+  async fetchRole(userId: string): Promise<{ data?: string | null; error?: any; }> {
+    const { data: dataRole, error: fetchRoleError } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('id', userId) //
+      .single();
+
+    if (fetchRoleError) {
+      return { data: null, error: fetchRoleError };
+    }
+
+    return { data: dataRole?.role || null, error: null };
+  }
+
  
   async createUser(data: RegisterData): Promise<{ data?: SessionUser; error?: any }> {
     try {
