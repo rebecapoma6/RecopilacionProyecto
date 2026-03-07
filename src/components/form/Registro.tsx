@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 import toast from "react-hot-toast";
 
+// Importamos el cliente desde tu archivo Client.ts
+import { supabase } from "../../database/supabase/Client"; 
 
 const userRepository = new SupabaseUserRepository();
 
@@ -27,6 +29,7 @@ interface ErrorsProps {
 export default function Registro() {
   const navigate = useNavigate();
   const setSession = useAuthStore(state => state.setSession);
+  
   const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
     username: "",
     email: "",
@@ -42,7 +45,7 @@ export default function Registro() {
   });
 
   const [loading, setLoading] = useState(false);
-
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,7 +55,6 @@ export default function Registro() {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
-
 
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -66,12 +68,16 @@ export default function Registro() {
       return;
     }
 
-
     const error = validateField(name === "username" ? "nombre" : name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
-  // Envío del formulario
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setAvatarFile(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -92,54 +98,83 @@ export default function Registro() {
     setLoading(true);
 
     try {
+      // 1. Subir el avatar a Storage (Si existe)
+      let avatarUrl = null;
+      if (avatarFile) {
+        const fileName = `${Date.now()}-${avatarFile.name.replace(/\s+/g, '-')}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(fileName, avatarFile);
+
+        if (uploadError) {
+          throw new Error("Error al subir el avatar: " + uploadError.message);
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(fileName);
+
+        avatarUrl = publicUrlData.publicUrl;
+      }
+
+      // 2. Crear el usuario
       const dataToSend = {
         email: datosFormulario.email,
         password: datosFormulario.password,
         username: datosFormulario.username,
-        role: 'user'
+        role: 'user',
+        avatar_url: avatarUrl || undefined
       };
 
       const { data, error } = await userRepository.createUser(dataToSend);
 
       if (error) {
-        toast.error("Error al registrar: " + error.message);
+        // ✨ AQUÍ EVALUAMOS EL ERROR QUE NOS DA LA AUTENTICACIÓN
+        const msg = error.message?.toLowerCase() || "";
+        if (msg.includes("already") || msg.includes("registrado") || msg.includes("exists")) {
+          setErrors((prev) => ({ ...prev, email: "Este email no se encuentra disponible" }));
+        } else {
+          toast.error("Error al registrar: " + error.message);
+        }
       } else if (data) {
-        //Guardamos la sesión en el store de Zustand
         setSession(data);
-        toast.success(`¡Bienvenido ${data.profile?.username}!`);
+        toast.success(`¡Bienvenido ${data.profile?.username || datosFormulario.username}!`);
         navigate("/");
       }
 
-    } catch (err) {
-      toast.error("Ocurrió un error inesperado.");
+    } catch (err: any) {
+      // ✨ POR SI TU REPOSITORIO LANZA EL ERROR EN VEZ DE DEVOLVERLO, LO CAZAMOS AQUÍ TAMBIÉN
+      const msg = err.message?.toLowerCase() || "";
+      if (msg.includes("already") || msg.includes("registrado") || msg.includes("exists") || msg.includes("422")) {
+        setErrors((prev) => ({ ...prev, email: "Este email no se encuentra disponible" }));
+      } else {
+        toast.error(err.message || "Ocurrió un error inesperado.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-
-<div className="w-screen h-screen flex justify-center items-center bg-neutral-100 font-sf-pro">
+    <div className="w-screen h-screen flex justify-center items-center bg-neutral-100 font-sf-pro">
       <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl">
         <div className="text-left mb-6">
-
           <h1 className="text-2xl font-bold text-primary-50 mb-1">Crear Cuenta</h1>
           <p className="text-neutral-500 text-sm">Crea una nueva cuenta para comenzar</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
           <InputField
             id="username"
             label="username"
             name="username"
             type="text"
-            placeholder="Tu nombre deusername"
+            placeholder="Tu nombre de usuario"
             value={datosFormulario.username}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.username}
-
           />
 
           <InputField
@@ -178,14 +213,20 @@ export default function Registro() {
             error={errors.passwordRepeat}
           />
 
+          <div className="flex flex-col gap-1">
+            <label htmlFor="avatar" className="text-sm font-medium text-neutral-600">
+              Foto de perfil (opcional)
+            </label>
+            <input 
+              id="avatar"
+              type="file" 
+              accept="image/png, image/jpeg, image/webp" 
+              onChange={handleFileChange}
+              className="text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-white hover:file:bg-primary-700 cursor-pointer"
+            />
+          </div>
+
           <div className="flex gap-4 pt-4">
-            {/* <Button
-              type="button"
-              
-              className="w-full py-2 bg-white border border-neutral-300 text-neutral-600 font-medium rounded-lg hover:bg-neutral-100 transition"
-            >
-              Cancelar
-            </Button> */}
             <Button
               type="button"
               onClick={() => navigate("/")}
