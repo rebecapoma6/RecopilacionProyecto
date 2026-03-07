@@ -1,13 +1,17 @@
 import type { Product } from "../../interfaces/Products";
 import type { ProductRepository } from "../repositories/ProductRepository";
 import { supabase } from "./Client";
-import { createStorageRepository } from "./SupabaseStorageRepository";
+import { SupabaseStorageRepository } from "./SupabaseStorageRepository";
+
 
 
 export class SupabaseProductRepository implements ProductRepository {
+  
   // Instanciamos el repositorio de storage para reutilizar la lógica de subida
-  storageRepository = createStorageRepository();
+  //storageRepository = createStorageRepository();
+  storageRepository = new SupabaseStorageRepository();
 
+  
   async createProduct(data: Partial<Product> & { imagen_file?: File }) {
     console.log("Datos recibidos en repo:", data);
     try {

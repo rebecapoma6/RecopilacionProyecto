@@ -1,11 +1,15 @@
+import type { StorageRepository } from "../repositories/StorageRepository";
 import { supabase } from "./Client";
 
-export interface StorageRepository {
-  uploadFile(bucketName: string, filePath: string, file: File): Promise<{ data?: { publicUrl: string }; error?: any }>;
-  removeImage(bucketName: string, filePath: string): Promise<{ error?: any }>;
-}
+
 
 export class SupabaseStorageRepository implements StorageRepository {
+  async getPublicUrl(bucketName: string, filePath: string): Promise<{ data: { publicUrl: string; }; }> {
+    const { data } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(filePath);
+        return { data: { publicUrl: data.publicUrl } };
+  }
   
   async uploadFile(bucketName: string, filePath: string, file: File) {
     // 1. Subir el archivo al bucket
@@ -29,4 +33,3 @@ export class SupabaseStorageRepository implements StorageRepository {
   }
 }
 
-export const createStorageRepository = () => new SupabaseStorageRepository();
