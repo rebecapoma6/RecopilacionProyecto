@@ -10,4 +10,10 @@ export interface UserRepository {
   createUser(data: RegisterData): Promise<{ data?: SessionUser; error?: any }>;
 
   login(email: string, password: string): Promise<{ data?: SessionUser; error?: any }>;
+
+  getCurrentUser(): Promise<{ data?: any; error?: any }>;
+
+  updateUser(updates: { username?: string; email?: string; password?: string; }): Promise<{ data?: any; error?: any }>;
+  
+  fetchAdminUsersList(): Promise<{ data?: any[] | null, error?: any }>;
 }

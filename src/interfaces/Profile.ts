@@ -10,6 +10,9 @@ export interface RegisterData {
   email: string;
   password: string;
   username: string;
-  avatar_url?: string;
+  // Mantenemos esta por si acaso (opcional)
+  avatar_url?: string; 
   role?: string;
+  // ¡Agregamos esta línea clave para recibir el archivo físico!
+  avatar_file?: File;
 }

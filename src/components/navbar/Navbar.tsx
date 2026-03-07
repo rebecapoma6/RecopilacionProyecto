@@ -32,7 +32,7 @@ export default function Navbar() {
                         {/* <Link to="/agregar-items" className="hover:underline">Añadir</Link> */}
                         <Link to="/modificar-datos" className="hover:underline">Modificar Datos</Link>
                           {isAdmin && (
-                        <Link to="/profile">Soy Administrador</Link>
+                        <Link to="/vistaAdmin">Administrador</Link>
                     )}
                         <Button variant="secondary" onClick={handleLogout}>
                             Cerrar sesión

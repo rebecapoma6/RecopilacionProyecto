@@ -57,13 +57,14 @@ import HomePage from './pages/HomePage';
 import IniciarSesionPage from './pages/IniciarSesionPage';
 import RegistroPage from './pages/RegistroPage';
 import ProductosSupabase from './pages/ProductosSupabase';
-import AgregarItemsPage from "./pages/AgregarItemsPage";
+//import AgregarItemsPage from "./pages/AgregarItemsPage";
 import PageRecuperarPassPage from './pages/RecuperarPassPage';
 import ModificarDatosPage from "./pages/ModificarDatosPage";
 // import PerfilUsuarioPage from './pages/PerfilUsuarioPage'; // Descomenta si ya existe
 
 import ProtectedRoute from "./router/ProtectedRoute";
 import PublicRoute from "./router/PublicRoute";
+import AdminPage from "./pages/AdminPage";
 
 
 
@@ -99,7 +100,8 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "/products", element: <ProductosSupabase/> },
-          { path: "/agregar-items", element:<AgregarItemsPage/>},
+           //{ path: "/products", element: <ProductosSupabase/> },
+          { path: "vistaAdmin", element:<AdminPage/>},
           { path: "/modificar-datos", element: <ModificarDatosPage/>}
         ]
       }
