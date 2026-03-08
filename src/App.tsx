@@ -67,6 +67,7 @@ import PublicRoute from "./router/PublicRoute";
 import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./router/AdminRoute";
 import AgregarItemsPage from "./pages/AgregarItemsPage";
+import EstadisticasPage from "./pages/EstadisticasPage";
 
 
 
@@ -117,7 +118,7 @@ const router = createBrowserRouter([
         element: <AppLayout />, 
         children: [
           { path: "/vistaAdmin", element: <AdminPage/>},
-          // { path: "/estadisticas", element: <GraficoPage/> }
+          { path: "/estadisticas", element: <EstadisticasPage/> }
         ]
       }
     ]

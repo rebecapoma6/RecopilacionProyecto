@@ -9,4 +9,7 @@ export interface ProductRepository {
   deleteProduct(id: number): Promise<{ data: any; error: any }>;
 
   updateProduct(product: Product): Promise<{ data: Product[] | null; error: any }>;
+
+  // Función para el Admin
+  fetchAllProducts(): Promise<{data: Product[], error?: any }>;
 }
