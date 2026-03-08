@@ -9,8 +9,14 @@ export const validateField = (name: string, value: string) => {
       if (!value) return "La edad es obligatoria";
       if (Number(value) <= 0) return "Debe ser mayor que 0";
       return "";
-    case "contrasenia":
+    case "password":
       if (value.length < 6) return "Mínimo 6 caracteres";
+      return "";
+
+    // En tu archivo de validaciones
+    case "email":
+      if (!value.trim()) return "El correo es obligatorio";
+      if (!/\S+@\S+\.\S+/.test(value)) return "El formato del correo no es válido";
       return "";
 
     case "titulo":

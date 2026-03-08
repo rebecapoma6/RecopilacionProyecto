@@ -7,7 +7,7 @@ export default function PerfilUsuarioPage() {
   const navigate = useNavigate();
   
   // ✨ AQUÍ ESTABA EL FALLO: Ahora usamos sessionUser en lugar de session
-  const sessionUser = useAuthStore((state: { sessionUser: any; }) => state.sessionUser);
+  const sessionUser = useAuthStore((state) => state.sessionUser);
 
   // Si no hay usuario logueado, mostramos un aviso
   if (!sessionUser) {
