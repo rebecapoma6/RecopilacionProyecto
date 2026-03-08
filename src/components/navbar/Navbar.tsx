@@ -49,7 +49,7 @@ export default function Navbar() {
                             </>
                         ) : (
                             <>
-                                <Link to="/profile" className="hover:underline">Perfil</Link>
+                                <Link to="/perfil" className="hover:underline">Perfil</Link>
                                 <Link to="/modificar-datos" className="hover:underline">Modificar Datos</Link>
                             </>
                         )}
