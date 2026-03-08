@@ -2,12 +2,14 @@ import { persist } from 'zustand/middleware'
 import type { SessionUser } from "../interfaces/SessionUser"
 import { create } from 'zustand'
 import { createUserRepository } from '../database/repositories'
+import type { User } from '@supabase/supabase-js'
 
 interface AuthState {
   sessionUser: SessionUser | null
   isAuthenticated: boolean
   isAdmin: boolean
-  setSession: (sessionUser: SessionUser) => void
+  user: User | null;
+  setSession: (sessionUser: SessionUser, user: User) => void
   clearSession: () => void
 }
 
@@ -22,8 +24,9 @@ export const useAuthStore = create<AuthState>()(
       sessionUser: null,
       isAuthenticated: false,
       isAdmin: false,
+      user: null, 
 
-      setSession: async (sessionUser) => {
+      setSession: async (sessionUser,user) => {
         let isAdmin = false;
 
         if (sessionUser.profile?.id) {
@@ -32,6 +35,7 @@ export const useAuthStore = create<AuthState>()(
         }
 
         set({
+          user,
           sessionUser,
           isAuthenticated: true,
           isAdmin
@@ -42,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
 
       clearSession: () => set({
         sessionUser: null,
+        user: null,
         isAuthenticated: false,
         isAdmin: false
       }),
@@ -51,6 +56,7 @@ export const useAuthStore = create<AuthState>()(
       version: 1,
       partialize: (state) => ({
         sessionUser: state.sessionUser,
+        user: state.user,
         isAuthenticated: state.isAuthenticated,
         isAdmin: state.isAdmin,
       }),

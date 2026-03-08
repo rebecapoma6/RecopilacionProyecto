@@ -5,10 +5,54 @@ import { supabase } from "./Client";
 import { SupabaseStorageRepository } from "./SupabaseStorageRepository";
 
 export class SupabaseUserRepository implements UserRepository {
+  async deleteUser(userId: string,avatar_url?: string): Promise<{ error?: any; }> {
+  try {
+      // A. Si tiene foto, la borramos usando la API de Storage (LA VÍA LEGAL)
+      if (avatar_url) {
+        const parts = avatar_url.split('/avatars/');
+        const filePath = parts.length > 1 ? parts[1] : null;
+        if (filePath) {
+          // Esto es lo que Supabase te pide en el error
+          await supabase.storage.from('avatars').remove([filePath]);
+        }
+      }
+
+      // B. PASO CRUCIAL: "Limpiamos" el perfil manualmente desde la API
+      // Esto hace que el registro ya no esté vinculado a nada de Storage
+      await supabase
+        .from('Profiles')
+        .update({ avatar_url: null })
+        .eq('id', userId);
+
+      // C. Ahora que el usuario está "limpio", llamamos al RPC
+      const { error } = await supabase.rpc('admin_delete_user', {
+        target_user_id: userId
+      });
+
+      return { error };
+    } catch (error) {
+      console.error("Error en deleteUser:", error);
+      return { error };
+    }
+  }
+  async updateUserRole(userId: string, newRole: string): Promise<{ error?: any; }> {
+    try {
+      // Actualizamos la tabla user_roles
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ role: newRole })
+        .eq('id', userId);
+
+      return { error };
+    } catch (error) {
+      console.error('Error al actualizar rol:', error);
+      return { error };
+    }
+  }
 
   storageRepository = new SupabaseStorageRepository();
 
- async fetchAdminUsersList(): Promise<{ data?: any[] | null; error?: any; }> {
+  async fetchAdminUsersList(): Promise<{ data?: any[] | null; error?: any; }> {
     const { data, error } = await supabase.rpc('get_admin_users_list');
 
     if (error) {
@@ -23,7 +67,7 @@ export class SupabaseUserRepository implements UserRepository {
     const { data: dataRole, error: fetchRoleError } = await supabase
       .from('user_roles')
       .select('role')
-      .eq('id', userId) 
+      .eq('id', userId)
       .single();
 
     if (fetchRoleError) {
@@ -38,7 +82,7 @@ export class SupabaseUserRepository implements UserRepository {
       if (!data.email || !data.password || !data.username) {
         return { error: { message: 'Email, usuario y contraseña son obligatorios' } };
       }
-      
+
       // A. Crear el usuario en la autenticación de Supabase
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
@@ -62,7 +106,7 @@ export class SupabaseUserRepository implements UserRepository {
 
         // Subimos al bucket 'avatars' (Asegúrate de tener este bucket creado en Supabase)
         const { data: uploadData, error: uploadError } = await this.storageRepository.uploadFile(
-          'avatars', 
+          'avatars',
           uploadedFilePath,
           data.avatar_file
         );
@@ -77,15 +121,15 @@ export class SupabaseUserRepository implements UserRepository {
 
       // C. Insertar los datos en tu tabla Profiles (¡ahora con la foto!)
       const { data: profileData, error: profileError } = await supabase
-        .from('Profiles') 
+        .from('Profiles')
         .insert({
-          id: user.id, 
+          id: user.id,
           username: data.username,
           avatar_url: publicAvatarUrl, // ¡Descomentado y usando nuestra nueva variable!
         })
         .select()
         .single();
-      
+
       // D. Rollback: Si por alguna razón falla guardar el perfil, borramos la foto para no ocupar espacio basura
       if (profileError) {
         if (uploadedFilePath) {
@@ -93,7 +137,7 @@ export class SupabaseUserRepository implements UserRepository {
         }
         return { error: profileError };
       }
-      
+
       const sessionUser: SessionUser = {
         user,
         profile: profileData,
@@ -115,8 +159,8 @@ export class SupabaseUserRepository implements UserRepository {
 
     if (authError) return { error: authError };
     if (!authData.user) return { error: { message: 'No se recibió usuario tras login' } };
-    
-    const { data: profile, error: profileError } = await supabase
+
+    const { data: profileData, error: profileError } = await supabase
       .from('Profiles')
       .select('*')
       .eq('id', authData.user.id)
@@ -129,7 +173,7 @@ export class SupabaseUserRepository implements UserRepository {
 
     const sessionUser: SessionUser = {
       user: authData.user,
-      profile: profile,
+      profile: profileData,
     };
 
     return { data: sessionUser };

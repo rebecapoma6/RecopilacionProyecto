@@ -70,8 +70,17 @@ export default function IniciarSesion() {
             toast.error(result.error.message || 'Credenciales inválidas');
         } 
         else if (result.data) {
-           
-            setSession(result.data);
+           // Extraemos el objeto 'user'
+            const supabaseUser = result.data.user; 
+
+            // Validamos que el usuario realmente esté ahí para calmar a TypeScript
+            if (!supabaseUser) {
+                toast.error('No se pudo recuperar la información del usuario');
+                return;
+            }
+
+            // Ahora TypeScript sabe que supabaseUser NO es null
+            setSession(result.data, supabaseUser);
             
            
             toast.success('¡Bienvenido de nuevo!');

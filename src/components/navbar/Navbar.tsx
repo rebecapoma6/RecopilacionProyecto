@@ -2,12 +2,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../form/Button';
 import { useAuthStore } from '../../store/useAuthStore';
 import { createUserRepository } from '../../database/repositories';
-import { Moon } from 'lucide-react';
+import { Moon, UserCircle } from 'lucide-react';
 
 export default function Navbar() {
-    const { isAuthenticated, isAdmin, clearSession } = useAuthStore();
+    const { isAuthenticated, isAdmin,sessionUser, clearSession } = useAuthStore();
     const userRepository = createUserRepository();
     const navigate = useNavigate();
+
+   const nombre = sessionUser?.profile?.username || "Usuario";
+    const avatar = sessionUser?.profile?.avatar_url;
 
     const handleLogout = async () => {
         const { error } = await userRepository.logout()
@@ -25,23 +28,32 @@ export default function Navbar() {
 
 
                 {isAuthenticated ? (
-                    // Lo que ve el usuario cuando YA está logueado 
-                    <>
+                   <>
+                        <div className="flex items-center space-x-2 bg-blue-700 px-3 py-1 rounded-full">
+                            {avatar ? (
+                                <img 
+                                    src={avatar} 
+                                    alt="Avatar" 
+                                    className="w-8 h-8 rounded-full border border-white object-cover" 
+                                />
+                            ) : (
+                                <UserCircle size={24} />
+                            )}
+                            <span className="text-sm font-medium text-white">¡Hola, {nombre}!</span>
+                        </div>
 
                         {isAdmin ? (
-                            // MENGÚ EXCLUSIVO PARA ADMINISTRADORES
                             <>
                                 <Link to="/vistaAdmin" className="hover:underline">Administrador</Link>
-                                <Link to="/estadisticas" className="hover:underline">Estadísticas</Link> 
+                                <Link to="/estadisticas" className="hover:underline">Estadísticas</Link>
                             </>
                         ) : (
-                            // MENÚ EXCLUSIVO PARA USUARIOS NORMALES
                             <>
                                 <Link to="/profile" className="hover:underline">Perfil</Link>
                                 <Link to="/modificar-datos" className="hover:underline">Modificar Datos</Link>
-                                {/* <Link to="/products" className="hover:underline">Productos</Link> */}
                             </>
                         )}
+                        
                         <Button variant="secondary" onClick={handleLogout}>
                             Cerrar sesión
                         </Button>

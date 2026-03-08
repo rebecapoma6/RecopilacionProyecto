@@ -7,6 +7,7 @@ import { validateField } from "../../utils/regex";
 import type { Product } from "../../interfaces/Products";
 import { SupabaseProductRepository } from "../../database/supabase/SupabaseProductRepository";
 import ImageInput from "./ImageInput";
+import toast from 'react-hot-toast';
 
 interface DatosFormularioProps {
     tipo: string;
@@ -125,7 +126,7 @@ export default function AgregarItems({ initialData }: AgregarItemsProps) {
 
         if (productToEdit) {
             // Actualizar producto
-            const { data, error } = await repository.updateProduct({
+            const { error } = await repository.updateProduct({
                 ...productToEdit,
                 titulo: datosFormulario.titulo,
                 resena: datosFormulario.reseña,
@@ -139,15 +140,15 @@ export default function AgregarItems({ initialData }: AgregarItemsProps) {
             });
 
             if (error) {
-                alert("Error al actualizar ❌");
+                toast.error("Error al actualizar ❌");
                 console.error(error);
                 return;
             }
 
-            alert("Producto actualizado correctamente ✅");
+            toast.success("Producto actualizado correctamente ✅");
         } else {
             // Crear nuevo producto
-            const { data, error } = await repository.createProduct({
+            const { error } = await repository.createProduct({
                 titulo: datosFormulario.titulo,
                 resena: datosFormulario.reseña,
                 imagen_url: datosFormulario.imagen,
@@ -161,12 +162,12 @@ export default function AgregarItems({ initialData }: AgregarItemsProps) {
             });
 
             if (error) {
-                alert("Error al guardar ❌");
+                toast.error("Error al guardar ❌");
                 console.error(error);
                 return;
             }
 
-            alert("Registro creado correctamente ✅");
+            toast.success("Registro creado correctamente ✅");
         }
 
         navigate("/");

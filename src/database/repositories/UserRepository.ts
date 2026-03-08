@@ -16,4 +16,8 @@ export interface UserRepository {
   updateUser(updates: { username?: string; email?: string; password?: string; }): Promise<{ data?: any; error?: any }>;
   
   fetchAdminUsersList(): Promise<{ data?: any[] | null, error?: any }>;
+
+  updateUserRole(userId: string, newRole: string): Promise<{ error?: any }>;
+
+  deleteUser(userId: string,avatar_url?: string): Promise<{ error?: any; }>;
 }

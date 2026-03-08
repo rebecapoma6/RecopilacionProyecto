@@ -66,6 +66,7 @@ import ProtectedRoute from "./router/ProtectedRoute";
 import PublicRoute from "./router/PublicRoute";
 import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./router/AdminRoute";
+import AgregarItemsPage from "./pages/AgregarItemsPage";
 
 
 
@@ -101,7 +102,7 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "/products", element: <ProductosSupabase/> },
-           //{ path: "/products", element: <ProductosSupabase/> },
+           { path: "/agregar-items", element: <AgregarItemsPage /> },
           { path: "/modificar-datos", element: <ModificarDatosPage/>}
         ]
       }

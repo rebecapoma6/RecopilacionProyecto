@@ -15,6 +15,16 @@ export class SupabaseProductRepository implements ProductRepository {
   async createProduct(data: Partial<Product> & { imagen_file?: File }) {
     console.log("Datos recibidos en repo:", data);
     try {
+
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        return { error: new Error("No hay un usuario autenticado") };
+      }
+
+
+
+
       let publicImageUrl = data.imagen_url || null;
       let uploadedFilePath: string | null = null;
 
@@ -41,6 +51,7 @@ export class SupabaseProductRepository implements ProductRepository {
       const { data: productData, error: insertError } = await supabase
         .from("Registros")
         .insert({
+          id: user.id,
           titulo: data.titulo,
           resena: data.resena,
           imagen_url: publicImageUrl, // Guardamos la URL pública
@@ -71,9 +82,16 @@ export class SupabaseProductRepository implements ProductRepository {
   }
 
   async readProduct(){
-    const { data, error} = await supabase
+    // 1. Obtenemos el usuario que tiene la sesión activa
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // 2. Si no hay usuario, devolvemos lista vacía (o error)
+    if (!user) return { data: [], error: new Error("No autenticado") };
+
+    const { data, error } = await supabase
     .from("Registros")
     .select("*")
+    .eq("id", user.id)
     .order("created_at", {ascending:false});
 
     return { data: data as Product[] | [], error};
