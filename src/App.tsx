@@ -49,9 +49,6 @@ import LandingLayout from './layouts/LandingLayout';
 import AuthLayout from './layouts/AuthLayout';
 import AppLayout from './layouts/AppLayout';
 
-//Componente 
-
-
 //Nuestras páginas actuales
 import HomePage from './pages/HomePage';
 import IniciarSesionPage from './pages/IniciarSesionPage';
@@ -60,7 +57,9 @@ import ProductosSupabase from './pages/ProductosSupabase';
 //import AgregarItemsPage from "./pages/AgregarItemsPage";
 import PageRecuperarPassPage from './pages/RecuperarPassPage';
 import ModificarDatosPage from "./pages/ModificarDatosPage";
-// import PerfilUsuarioPage from './pages/PerfilUsuarioPage'; // Descomenta si ya existe
+
+
+import PerfilUsuarioPage from './pages/PerfilUsuarioPage'; 
 
 import ProtectedRoute from "./router/ProtectedRoute";
 import PublicRoute from "./router/PublicRoute";
@@ -68,9 +67,6 @@ import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./router/AdminRoute";
 import AgregarItemsPage from "./pages/AgregarItemsPage";
 import EstadisticasPage from "./pages/EstadisticasPage";
-
-
-
 
 
 const router = createBrowserRouter([
@@ -95,7 +91,6 @@ const router = createBrowserRouter([
     ]
   },
 
-
    {
     element: <ProtectedRoute />, // Solo para usuarios AUTENTICADOS
     children: [
@@ -103,13 +98,12 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "/products", element: <ProductosSupabase/> },
-           { path: "/agregar-items", element: <AgregarItemsPage /> },
-          { path: "/modificar-datos", element: <ModificarDatosPage/>}
+          { path: "/modificar-datos", element: <ModificarDatosPage/>},
+          { path: "/perfil", element: <PerfilUsuarioPage/>} 
         ]
       }
     ]
   },
-
 
   {
     element: <AdminRoute />, // Solo para Administradores
@@ -124,13 +118,10 @@ const router = createBrowserRouter([
     ]
   }
 
-
-
 ])
 
 function App(){
-return <RouterProvider router={router} />;
-
+  return <RouterProvider router={router} />;
 }
 
 export default App;
