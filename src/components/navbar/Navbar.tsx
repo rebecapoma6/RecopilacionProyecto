@@ -37,7 +37,7 @@ export default function Navbar() {
                         ) : (
                             // MENÚ EXCLUSIVO PARA USUARIOS NORMALES
                             <>
-                                <Link to="/profile" className="hover:underline">Perfil</Link>
+                                <Link to="/perfil" className="hover:underline">Perfil</Link>
                                 <Link to="/modificar-datos" className="hover:underline">Modificar Datos</Link>
                                 {/* <Link to="/products" className="hover:underline">Productos</Link> */}
                             </>
