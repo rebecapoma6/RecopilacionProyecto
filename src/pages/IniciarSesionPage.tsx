@@ -1,14 +1,13 @@
-import Footer from "../components/footer/Footer";
+﻿import { useNavigate } from "react-router-dom";
 import IniciarSesion from "../components/form/IniciarSesion";
-import Navbar from "../components/navbar/Navbar";
+import Modal from "../components/modal/Modal";
 
-export default function IniciarSesionPage(){
+export default function IniciarSesionPage() {
+  const navigate = useNavigate();
 
-  return(
-    <>
-    <Navbar></Navbar>
-      <IniciarSesion></IniciarSesion>
-    <Footer></Footer>
-    </>
-  )
+  return (
+    <Modal title="Iniciar sesión" isOpen={true} onClose={() => navigate('/')}>
+      <IniciarSesion />
+    </Modal>
+  );
 }

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @theme {
     --color-neutral-700: #1F1F1F;
@@ -68,4 +68,129 @@
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
     --font-sf-pro: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+:root {
+    --app-bg: #f2f8ff;
+    --app-surface: rgba(255, 255, 255, 0.88);
+    --app-surface-strong: #ffffff;
+    --app-border: #cfeaff;
+    --app-text: #12356b;
+    --app-muted: #4f6f99;
+    --app-navbar-bg: rgba(242, 248, 255, 0.95);
+    --app-footer-bg: rgba(255, 255, 255, 0.72);
+    --app-chip-bg: #ffffff;
+    --app-modal-bg: #fafafa;
+    --app-input-bg: #ffffff;
+    --app-secondary-bg: #ffffff;
+    --app-secondary-text: #12356b;
+    --app-overlay: rgba(9, 20, 42, 0.6);
+}
+
+:root[data-theme="dark"] {
+    --app-bg: #0b1730;
+    --app-surface: rgba(17, 35, 69, 0.88);
+    --app-surface-strong: #132746;
+    --app-border: #2b4d7e;
+    --app-text: #eaf2ff;
+    --app-muted: #abc0df;
+    --app-navbar-bg: rgba(11, 23, 48, 0.92);
+    --app-footer-bg: rgba(10, 21, 43, 0.9);
+    --app-chip-bg: #18315d;
+    --app-modal-bg: #122544;
+    --app-input-bg: #18315d;
+    --app-secondary-bg: #18315d;
+    --app-secondary-text: #eaf2ff;
+    --app-overlay: rgba(3, 10, 24, 0.78);
+}
+
+html,
+body,
+#root {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sf-pro);
+    background: var(--app-bg);
+    color: var(--app-text);
+    overflow-x: hidden;
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+.app-shell {
+    background: var(--app-bg);
+    color: var(--app-text);
+}
+
+.app-surface {
+    background: var(--app-surface);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.app-surface-strong {
+    background: var(--app-surface-strong);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.app-navbar {
+    background: var(--app-navbar-bg);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.app-footer {
+    background: var(--app-footer-bg);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.app-chip {
+    background: var(--app-chip-bg);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.app-input {
+    background: var(--app-input-bg);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.app-modal {
+    background: var(--app-modal-bg);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.app-secondary {
+    background: var(--app-secondary-bg);
+    color: var(--app-secondary-text);
+    border-color: var(--app-border);
+}
+
+.app-muted {
+    color: var(--app-muted);
+}
+
+.btn-primary {
+    background-color: var(--color-primary-700);
+    color: var(--color-white);
+}
+
+.btn-primary:hover {
+    background-color: #2558d8;
 }

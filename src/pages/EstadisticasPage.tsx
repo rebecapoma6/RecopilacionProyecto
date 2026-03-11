@@ -1,15 +1,11 @@
-import EstadisticasDashboard from "../components/admin/EstadisticasDashboard";
+﻿import EstadisticasDashboard from "../components/admin/EstadisticasDashboard";
 
 export default function EstadisticasPage() {
-    return (
-        <div className="p-8 bg-gray-50 min-h-screen">
-            <h1 className="text-2xl font-bold mb-2 text-gray-800">Estadísticas del Sistema</h1>
-            <p className="mb-8 text-gray-600">
-                Visión general de los datos almacenados en StoryPlay.
-            </p>
-            
-            {/* Llamamos al componente gráfico */}
-            <EstadisticasDashboard />
-        </div>
-    );
+  return (
+    <div className="mx-auto w-full max-w-7xl p-4 md:p-8">
+      <h1 className="mb-2 text-2xl font-bold">Estadísticas del Sistema</h1>
+      <p className="app-muted mb-8">Visión general de los datos almacenados en StoryPlay.</p>
+      <EstadisticasDashboard />
+    </div>
+  );
 }

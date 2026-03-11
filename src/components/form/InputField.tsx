@@ -1,47 +1,30 @@
-import type { InputHTMLAttributes } from "react";
+﻿import type { InputHTMLAttributes } from "react";
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-    label: string;
-    error?: string;
+  label: string;
+  error?: string;
 }
 
 export default function InputFieldClase({
-    label,
-    error,
-    id,
-    ...props
+  label,
+  error,
+  id,
+  className = "",
+  ...props
 }: InputFieldProps) {
-    return (
-        <div>
-            <label htmlFor={id} className="block mb-1">
-                {label}
-            </label>
+  return (
+    <div>
+      <label htmlFor={id} className="app-muted mb-1 block text-sm font-medium">
+        {label}
+      </label>
 
-            <input
-                id={id}
-                className="block w-full border rounded p-2"
-                {...props}
-            />
+      <input
+        id={id}
+        className={`app-input block w-full rounded-xl border p-3 outline-none transition focus:border-primary-600 focus:ring-2 focus:ring-primary-300 ${className}`.trim()}
+        {...props}
+      />
 
-            {error && (
-                <p className="text-red-500 text-sm mt-1">
-                    {error}
-                </p>
-            )}
-        </div>
-    );
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+    </div>
+  );
 }
-
-
-// Ejemplo de uso
-
-// <InputFieldClase
-//   label="Contraseña"
-//   id="password"
-//   type="password"
-//   name="password"
-//   value={formData.password}
-//   onChange={handleChange}
-//   onBlur={handleBlur}
-//   error={errors.password}
-// />

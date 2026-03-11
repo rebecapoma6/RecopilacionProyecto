@@ -1,14 +1,12 @@
-import type { RegisterData } from "../../interfaces/Profile";
+﻿import type { RegisterData } from "../../interfaces/Profile";
 import type { SessionUser } from "../../interfaces/SessionUser";
-import type { UserRepository } from "../repositories/UserRepository";
+import type { UpdateUserData, UserRepository } from "../repositories/UserRepository";
 import { supabase } from "./Client";
 import { SupabaseStorageRepository } from "./SupabaseStorageRepository";
 
 export class SupabaseUserRepository implements UserRepository {
+  storageRepository = new SupabaseStorageRepository();
 
-  // -----------------------------
-  // CREAR UN USUARIO
-  // -----------------------------
   async createUser(data: RegisterData): Promise<{ data?: SessionUser; error?: any }> {
     try {
       if (!data.email || !data.password || !data.username) {
@@ -24,7 +22,6 @@ export class SupabaseUserRepository implements UserRepository {
       if (!authData.user) return { error: { message: 'No se pudo crear el usuario en Auth' } };
 
       const user = authData.user;
-
       let publicAvatarUrl: string | null = null;
       let uploadedFilePath: string | null = null;
 
@@ -32,11 +29,7 @@ export class SupabaseUserRepository implements UserRepository {
         const fileExt = data.avatar_file.name.split('.').pop();
         uploadedFilePath = `${user.id}-${crypto.randomUUID()}.${fileExt}`;
 
-        const { data: uploadData, error: uploadError } = await this.storageRepository.uploadFile(
-          'avatars',
-          uploadedFilePath,
-          data.avatar_file
-        );
+        const { data: uploadData, error: uploadError } = await this.storageRepository.uploadFile('avatars', uploadedFilePath, data.avatar_file);
 
         if (!uploadError && uploadData) {
           publicAvatarUrl = uploadData.publicUrl;
@@ -60,28 +53,18 @@ export class SupabaseUserRepository implements UserRepository {
         return { error: profileError };
       }
 
-      const sessionUser: SessionUser = {
-        user,
-        profile: profileData,
-      };
-
-      return { data: sessionUser };
-
+      return { data: { user, profile: profileData } };
     } catch (error) {
       console.error('Error en SupabaseUserRepository.createUser:', error);
       return { error };
     }
   }
 
-
-  // -----------------------------
-  // Obtener Lista de usuarios Administradores
-  // -----------------------------
   async fetchAdminUsersList(): Promise<{ data?: any[] | null; error?: any; }> {
     const { data, error } = await supabase.rpc('get_admin_users_list');
 
     if (error) {
-      console.error("Error obteniendo la lista de usuarios:", error);
+      console.error('Error obteniendo la lista de usuarios:', error);
       return { data: null, error };
     }
 
@@ -102,17 +85,9 @@ export class SupabaseUserRepository implements UserRepository {
     return { data: dataRole?.role || null, error: null };
   }
 
-
-  // -----------------------------
-  // ACTUALIZAR ROL DE UN USUARIO
-  // -----------------------------
   async updateUserRole(userId: string, newRole: string): Promise<{ error?: any; }> {
     try {
-      const { error } = await supabase
-        .from('user_roles')
-        .update({ role: newRole })
-        .eq('id', userId);
-
+      const { error } = await supabase.from('user_roles').update({ role: newRole }).eq('id', userId);
       return { error };
     } catch (error) {
       console.error('Error al actualizar rol:', error);
@@ -120,55 +95,115 @@ export class SupabaseUserRepository implements UserRepository {
     }
   }
 
+  async updateUser(updates: UpdateUserData): Promise<{ data?: SessionUser; error?: any }> {
+    try {
+      const { data: currentUserData, error: currentUserError } = await supabase.auth.getUser();
+      const currentUser = currentUserData.user;
 
-  // -----------------------------
-  // ACTUALIZAR UN USUARIO
-  // -----------------------------
-  async updateUser(updates: { username?: string; email?: string; password?: string; }) {
-    const payload: any = {};
+      if (currentUserError || !currentUser) {
+        return { error: currentUserError || { message: 'No hay usuario autenticado' } };
+      }
 
-    if (updates.email) payload.email = updates.email;
-    if (updates.password) payload.password = updates.password;
-    if (updates.username) payload.data = { username: updates.username };
+      const { data: currentProfile, error: profileFetchError } = await supabase
+        .from('Profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
 
-    const { data, error } = await supabase.auth.updateUser(payload);
-    return { data, error };
+      if (profileFetchError) {
+        return { error: profileFetchError };
+      }
+
+      const payload: { email?: string; password?: string; data?: { username?: string } } = {};
+
+      if (updates.email) payload.email = updates.email;
+      if (updates.password) payload.password = updates.password;
+      if (updates.username) payload.data = { username: updates.username };
+
+      let updatedUser = currentUser;
+
+      if (Object.keys(payload).length > 0) {
+        const { data: authUpdateData, error: authError } = await supabase.auth.updateUser(payload);
+        if (authError) return { error: authError };
+        updatedUser = authUpdateData.user ?? currentUser;
+      }
+
+      let publicAvatarUrl = currentProfile?.avatar_url ?? null;
+      let uploadedFilePath: string | null = null;
+
+      if (updates.avatar_file) {
+        const fileExt = updates.avatar_file.name.split('.').pop();
+        uploadedFilePath = `${currentUser.id}-${crypto.randomUUID()}.${fileExt}`;
+
+        const { data: uploadData, error: uploadError } = await this.storageRepository.uploadFile('avatars', uploadedFilePath, updates.avatar_file);
+        if (uploadError) return { error: uploadError };
+        publicAvatarUrl = uploadData?.publicUrl ?? null;
+      } else if (updates.avatar_url !== undefined) {
+        publicAvatarUrl = updates.avatar_url;
+      }
+
+      const profileUpdates: { username?: string; avatar_url?: string | null } = {};
+      if (updates.username) profileUpdates.username = updates.username;
+      if (updates.avatar_file || updates.avatar_url !== undefined) profileUpdates.avatar_url = publicAvatarUrl;
+
+      let updatedProfile = currentProfile;
+
+      if (Object.keys(profileUpdates).length > 0) {
+        const { data: profileData, error: profileError } = await supabase
+          .from('Profiles')
+          .update(profileUpdates)
+          .eq('id', currentUser.id)
+          .select()
+          .single();
+
+        if (profileError) {
+          if (uploadedFilePath) {
+            await this.storageRepository.removeImage('avatars', uploadedFilePath);
+          }
+          return { error: profileError };
+        }
+
+        updatedProfile = profileData;
+
+        const oldFileName = currentProfile?.avatar_url?.split('/').pop();
+        if (uploadedFilePath && oldFileName && oldFileName !== uploadedFilePath) {
+          await this.storageRepository.removeImage('avatars', oldFileName);
+        }
+      }
+
+      return { data: { user: updatedUser, profile: updatedProfile } };
+    } catch (error) {
+      console.error('Error al actualizar usuario:', error);
+      return { error };
+    }
   }
 
-
-  // -----------------------------
-  // ELIMINAR UN USUARIO
-  // -----------------------------
   async deleteUser(userId: string): Promise<{ error?: any; }> {
     try {
       const { data: files } = await supabase.storage.from('avatars').list(userId);
 
       if (files && files.length > 0) {
-        const filesToRemove = files.map(file => `${userId}/${file.name}`);
+        const filesToRemove = files.map((file) => `${userId}/${file.name}`);
         await supabase.storage.from('avatars').remove(filesToRemove);
       }
 
       await supabase.from('Profiles').update({ avatar_url: null }).eq('id', userId);
 
       const { error } = await supabase.rpc('admin_delete_user', {
-        target_user_id: userId
+        target_user_id: userId,
       });
 
       if (error) {
-        console.error("Error de Supabase al borrar usuario:", error.message);
+        console.error('Error de Supabase al borrar usuario:', error.message);
       }
 
       return { error };
     } catch (error) {
-      console.error("Error inesperado en deleteUser:", error);
+      console.error('Error inesperado en deleteUser:', error);
       return { error };
     }
   }
 
-
-  // -----------------------------
-  // AUTHENTICATION
-  // -----------------------------
   async login(email: string, password: string): Promise<{ data?: SessionUser; error?: any }> {
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
@@ -189,24 +224,18 @@ export class SupabaseUserRepository implements UserRepository {
       return { error: profileError };
     }
 
-    const sessionUser: SessionUser = {
-      user: authData.user,
-      profile: profileData,
+    return {
+      data: {
+        user: authData.user,
+        profile: profileData,
+      },
     };
-
-    return { data: sessionUser };
   }
 
   async logout(): Promise<{ error?: any }> {
     const { error } = await supabase.auth.signOut();
     return { error };
   }
-
-
-  // -----------------------------
-  // UTILIDADES
-  // -----------------------------
-  storageRepository = new SupabaseStorageRepository();
 
   async getCurrentUser() {
     const { data: { user }, error } = await supabase.auth.getUser();
