@@ -5,6 +5,7 @@ import { supabase } from "./Client";
 import { SupabaseStorageRepository } from "./SupabaseStorageRepository";
 
 export class SupabaseUserRepository implements UserRepository {
+  
   async deleteUser(userId: string): Promise<{ error?: any; }> {
   try {
     // 1. LA VÍA LEGAL: Buscamos si el usuario tiene fotos en su carpeta
@@ -201,4 +202,21 @@ export class SupabaseUserRepository implements UserRepository {
     const { data, error } = await supabase.auth.updateUser(payload);
     return { data, error };
   }
+
+  async resetPasswordForEmail(email: string): Promise<{ error?: any; }> {
+    const { error } = await supabase.auth.resetPasswordForEmail(
+            email, {
+            // OJO AQUÍ: Tienes que cambiar este enlace
+            redirectTo: "http://localhost:5173/actualizar-clave" 
+        });
+        
+        return { error: error || null };
+    
+  }
+
+  async updatePassword(newPassword: string): Promise<{ error?: any }> {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error: error || null };
+  }
+  
 }

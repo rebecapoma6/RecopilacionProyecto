@@ -17,6 +17,7 @@ import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./router/AdminRoute";
 import AgregarItemsPage from "./pages/AgregarItemsPage";
 import EstadisticasPage from "./pages/EstadisticasPage";
+import ActualizarClave from "./utils/ActualizarClave";
 
 
 const router = createBrowserRouter([
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     element: <LandingLayout />, //esta sera como ruta la pública general
     children: [
       { path: "/", element: <HomePage /> },
+      { path: "/actualizar-clave", element: <ActualizarClave /> },
     ],
   },
 
