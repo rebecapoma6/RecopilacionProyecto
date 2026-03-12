@@ -1,11 +1,10 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { validateField } from '../../utils/regex';
 import InputFieldClase from './InputField';
 import Button from './Button';
 import { useNavigate } from 'react-router-dom';
 import { createUserRepository } from '../../database/repositories';
 import toast from 'react-hot-toast';
-
 
 export default function RecuperarPass() {
     const navigate = useNavigate();
@@ -17,11 +16,11 @@ export default function RecuperarPass() {
     const [enviado, setEnviado] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-        setErrors({ ...errors, [name]: validateField("email", value) }); // Usamos lógica de email
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: validateField('email', value) });
+  };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

@@ -1,73 +1,28 @@
-# React + TypeScript + Vite
+﻿# StoryPlay
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicacion web hecha con React, TypeScript y Vite para organizar una coleccion personal de libros y videojuegos.
 
-Currently, two official plugins are available:
+## Que incluye
+- Registro e inicio de sesion con Supabase.
+- Gestion de perfil de usuario.
+- Catalogo personal con crear, editar, buscar y eliminar items.
+- Panel de administracion para usuarios y estadisticas.
+- Interfaz responsive con layouts compartidos, modal reutilizable y componentes reutilizables.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Stack principal
+- React 19
+- TypeScript
+- Vite
+- React Router
+- Zustand
+- Supabase
+- Tailwind CSS
 
-## React Compiler
+## Estructura general
+- `src/pages`: pantallas principales.
+- `src/components`: formularios, layout, cards, modal y elementos de UI.
+- `src/database`: repositorios e integracion con Supabase.
+- `src/store`: estado global de autenticacion.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Objetivo del proyecto
+Centralizar en una sola app el seguimiento de lecturas y videojuegos pendientes o completados, manteniendo un flujo simple para usuarios normales y herramientas de control para administradores.

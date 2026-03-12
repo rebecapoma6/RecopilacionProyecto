@@ -1,14 +1,13 @@
-import Footer from "../components/footer/Footer";
+﻿import { useNavigate } from "react-router-dom";
 import Registro from "../components/form/Registro";
-import Navbar from "../components/navbar/Navbar";
+import Modal from "../components/modal/Modal";
 
-export default function RegistroPage(){
+export default function RegistroPage() {
+  const navigate = useNavigate();
 
-    return(
-        <>
-        <Navbar></Navbar>
-            <Registro></Registro>
-        <Footer></Footer>
-        </>
-    )
+  return (
+    <Modal title="Registro" isOpen={true} onClose={() => navigate('/')}>
+      <Registro />
+    </Modal>
+  );
 }

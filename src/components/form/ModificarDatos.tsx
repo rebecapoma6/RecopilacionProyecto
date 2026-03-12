@@ -1,9 +1,10 @@
-import { useState, useEffect, type ChangeEvent, type FocusEvent, type FormEvent } from "react";
+﻿import { useState, useEffect, type ChangeEvent, type FocusEvent, type FormEvent } from "react";
 import { validateField } from "../../utils/regex";
 import Button from "./Button";
 import InputField from "./InputField";
-
+import ImageInput from "./ImageInput";
 import { SupabaseUserRepository } from "../../database/supabase/SupabaseUserRepository";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const userRepository = new SupabaseUserRepository();
 
@@ -22,6 +23,9 @@ interface ErrorsProps {
 }
 
 export default function EditarPerfil() {
+  const sessionUser = useAuthStore((state) => state.sessionUser);
+  const setSession = useAuthStore((state) => state.setSession);
+
   const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
     username: "",
     email: "",
@@ -37,9 +41,21 @@ export default function EditarPerfil() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(sessionUser?.profile?.avatar_url || null);
 
-  // Cargar datos actuales del usuario (una sola vez)
   useEffect(() => {
+    if (sessionUser) {
+      setDatosFormulario({
+        username: sessionUser.profile?.username || "",
+        email: sessionUser.user?.email || "",
+        password: "",
+        passwordRepeat: "",
+      });
+      setAvatarUrl(sessionUser.profile?.avatar_url || null);
+      return;
+    }
+
     const cargarUsuario = async () => {
       try {
         const { data: user, error } = await userRepository.getCurrentUser();
@@ -51,7 +67,7 @@ export default function EditarPerfil() {
         setDatosFormulario({
           username: (user.user_metadata?.username as string) || "",
           email: user.email || "",
-          password: "",           // nunca mostramos la contraseña actual
+          password: "",
           passwordRepeat: "",
         });
       } catch (err) {
@@ -60,8 +76,8 @@ export default function EditarPerfil() {
       }
     };
 
-    cargarUsuario();
-  }, []);
+    void cargarUsuario();
+  }, [sessionUser]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -75,7 +91,6 @@ export default function EditarPerfil() {
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    // Contraseña repetida (solo validar si el usuario está intentando cambiar contraseña)
     if (name === "passwordRepeat") {
       if (datosFormulario.password && value !== datosFormulario.password) {
         setErrors((prev) => ({ ...prev, passwordRepeat: "Las contraseñas no coinciden" }));
@@ -85,33 +100,28 @@ export default function EditarPerfil() {
       return;
     }
 
-    // Nueva contraseña (opcional)
     if (name === "password") {
       const error = value ? validateField("password", value) : "";
       setErrors((prev) => ({ ...prev, password: error }));
       return;
     }
 
-    // username y email
     const error = validateField(name === "username" ? "nombre" : name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const handleAvatarChange = (file: File) => {
+    setAvatarFile(file);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Validaciones
     const newErrors: ErrorsProps = {
       username: validateField("nombre", datosFormulario.username),
       email: validateField("email", datosFormulario.email),
-      password: datosFormulario.password
-        ? validateField("password", datosFormulario.password)
-        : "",
-      passwordRepeat: datosFormulario.password
-        ? (datosFormulario.password !== datosFormulario.passwordRepeat
-            ? "Las contraseñas no coinciden"
-            : "")
-        : "",
+      password: datosFormulario.password ? validateField("password", datosFormulario.password) : "",
+      passwordRepeat: datosFormulario.password ? (datosFormulario.password !== datosFormulario.passwordRepeat ? "Las contraseñas no coinciden" : "") : "",
     };
 
     setErrors(newErrors);
@@ -121,23 +131,24 @@ export default function EditarPerfil() {
     setLoading(true);
 
     try {
-      // Solo enviamos lo que el usuario quiere cambiar
-      const dataToSend: any = {
+      const dataToSend = {
         username: datosFormulario.username,
         email: datosFormulario.email,
+        password: datosFormulario.password || undefined,
+        avatar_file: avatarFile || undefined,
+        avatar_url: avatarUrl,
       };
-      if (datosFormulario.password) {
-        dataToSend.password = datosFormulario.password;
-      }
 
-      const { error } = await userRepository.updateUser(dataToSend);
+      const { data, error } = await userRepository.updateUser(dataToSend);
 
       if (error) {
         alert("Error al actualizar: " + (error.message || "Error desconocido"));
       } else {
-        alert("✅ ¡Datos actualizados correctamente!");
-        // Opcional: recargar para ver cambios inmediatos
-        // window.location.reload();
+        if (data?.user) {
+          await setSession(data, data.user);
+          setAvatarUrl(data.profile?.avatar_url || null);
+        }
+        alert("Datos actualizados correctamente");
       }
     } catch (err) {
       console.error(err);
@@ -148,83 +159,31 @@ export default function EditarPerfil() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-neutral-100 font-sf-pro">
-      <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl">
-        <div className="text-left mb-6">
-          <h1 className="text-2xl font-bold text-primary-50 mb-1">Editar Perfil</h1>
-          <p className="text-neutral-500 text-sm">Actualiza tu información</p>
+    <div>
+      <div className="mb-6 text-left">
+        <p className="app-muted mt-1 text-sm">Actualiza tu información personal y tu foto de perfil.</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="app-surface rounded-2xl border p-4">
+          <p className="mb-3 text-sm font-medium">Foto de perfil</p>
+          <ImageInput name="avatar-perfil" defaultImageUrl={avatarUrl} onFileSelect={handleAvatarChange} />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <InputField
-            id="username"
-            label="Nombre de usuario"
-            name="username"
-            type="text"
-            placeholder="Tu nombre de usuario"
-            value={datosFormulario.username}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.username}
-          />
+        <InputField id="username" label="Nombre de usuario" name="username" type="text" placeholder="Tu nombre de usuario" value={datosFormulario.username} onChange={handleChange} onBlur={handleBlur} error={errors.username} />
+        <InputField id="email" label="Correo electrónico" name="email" type="email" placeholder="Tu correo electrónico" value={datosFormulario.email} onChange={handleChange} onBlur={handleBlur} error={errors.email} />
+        <InputField id="password" label="Nueva contraseña (opcional)" name="password" type="password" placeholder="Nueva contraseña" value={datosFormulario.password} onChange={handleChange} onBlur={handleBlur} error={errors.password} />
+        <InputField id="passwordRepeat" label="Repetir nueva contraseña" name="passwordRepeat" type="password" placeholder="Repetir nueva contraseña" value={datosFormulario.passwordRepeat} onChange={handleChange} onBlur={handleBlur} error={errors.passwordRepeat} />
 
-          <InputField
-            id="email"
-            label="Correo electrónico"
-            name="email"
-            type="email"
-            placeholder="Tu correo electrónico"
-            value={datosFormulario.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.email}
-          />
-
-          <InputField
-            id="password"
-            label="Nueva contraseña (opcional)"
-            name="password"
-            type="password"
-            placeholder="Nueva contraseña"
-            value={datosFormulario.password}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.password}
-          />
-
-          <InputField
-            id="passwordRepeat"
-            label="Repetir nueva contraseña"
-            name="passwordRepeat"
-            type="password"
-            placeholder="Repetir nueva contraseña"
-            value={datosFormulario.passwordRepeat}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.passwordRepeat}
-          />
-
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="button"
-              onClick={() => window.history.back()}
-              className="w-full py-2 bg-white border border-neutral-300 text-neutral-600 font-medium rounded-lg hover:bg-neutral-100 transition"
-            >
-              Cancelar
-            </Button>
-
-            <Button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-2 text-white font-medium rounded-lg transition ${
-                loading ? "bg-primary-400" : "bg-primary-50 hover:bg-primary-700"
-              }`}
-            >
-              {loading ? "Guardando..." : "Guardar cambios"}
-            </Button>
-          </div>
-        </form>
-      </div>
+        <div className="flex flex-col gap-3 pt-3 sm:flex-row">
+          <Button type="button" onClick={() => window.history.back()} variant="secondary" className="w-full">
+            Cancelar
+          </Button>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Guardando..." : "Guardar cambios"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

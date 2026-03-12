@@ -7,11 +7,13 @@ import { SupabaseStorageRepository } from "./SupabaseStorageRepository";
 
 export class SupabaseProductRepository implements ProductRepository {
   
+  // Repositorio de Storage
   // Instanciamos el repositorio de storage para reutilizar la lógica de subida
-  //storageRepository = createStorageRepository();
   storageRepository = new SupabaseStorageRepository();
 
-  
+
+  // ========================== CREATE ===========================
+  // Crear un nuevo producto (con subida opcional de imagen)
   async createProduct(data: Partial<Product> & { imagen_file?: File }) {
     console.log("Datos recibidos en repo:", data);
     try {
@@ -22,20 +24,16 @@ export class SupabaseProductRepository implements ProductRepository {
         return { error: new Error("No hay un usuario autenticado") };
       }
 
-
-
-
       let publicImageUrl = data.imagen_url || null;
       let uploadedFilePath: string | null = null;
 
       // 1. Si viene un archivo físico, lo subimos primero al Storage
       if (data.imagen_file) {
         const fileExt = data.imagen_file.name.split('.').pop();
-        // Generamos un nombre único: "productos/UUID.extension"
         uploadedFilePath = `${crypto.randomUUID()}.${fileExt}`;
 
         const { data: uploadData, error: uploadError } = await this.storageRepository.uploadFile(
-          'ImagenProductos', // Tu bucket
+          'ImagenProductos',
           uploadedFilePath,
           data.imagen_file
         );
@@ -47,25 +45,24 @@ export class SupabaseProductRepository implements ProductRepository {
         publicImageUrl = uploadData?.publicUrl ?? null;
       }
 
-      // 2. Insertamos el registro en la tabla "Registros" con la URL obtenida
+      // 2. Insertamos el registro en la tabla "Registros"
       const { data: productData, error: insertError } = await supabase
         .from("Registros")
         .insert({
           id: user.id,
           titulo: data.titulo,
           resena: data.resena,
-          imagen_url: publicImageUrl, // Guardamos la URL pública
+          imagen_url: publicImageUrl,
           tipo: data.tipo,
           genero: data.genero,
           autor: data.autor,
           fecha_fin: data.fecha_fin,
           puntuacion: data.puntuacion
-          // El ID_REGISTRO suele ser autoincremental, no hace falta pasarlo si es nuevo
         })
         .select()
         .single();
 
-      // 3. Rollback: Si falla la inserción en la tabla, borramos la imagen que acabamos de subir
+      // 3. Rollback si falla la inserción
       if (insertError) {
         if (uploadedFilePath) {
           await this.storageRepository.removeImage('ImagenProductos', uploadedFilePath);
@@ -81,25 +78,73 @@ export class SupabaseProductRepository implements ProductRepository {
     }
   }
 
-  async readProduct(){
-    // 1. Obtenemos el usuario que tiene la sesión activa
+
+  // ============================ READ ===========================
+  // Leer productos del usuario autenticado
+  async readProduct() {
     const { data: { user } } = await supabase.auth.getUser();
 
-    // 2. Si no hay usuario, devolvemos lista vacía (o error)
     if (!user) return { data: [], error: new Error("No autenticado") };
 
     const { data, error } = await supabase
-    .from("Registros")
-    .select("*")
-    .eq("id", user.id)
-    .order("created_at", {ascending:false});
+      .from("Registros")
+      .select("*")
+      .eq("id", user.id)
+      .order("created_at", { ascending: false });
 
-    return { data: data as Product[] | [], error};
+    return { data: data as Product[] | [], error };
   }
 
-  async deleteProduct(id: number): Promise<{ data: any; error: any }>{
 
-    // 2. Borramos el registro de la base de datos
+  // =========================== UPDATE ==========================
+  // Actualizar un producto (con reemplazo opcional de imagen)
+  async updateProduct(product: Product & { imagen_file?: File }) {
+    let publicImageUrl = product.imagen_url;
+
+    // 1. Si el usuario seleccionó un archivo nuevo
+    if (product.imagen_file) {
+      const fileExt = product.imagen_file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+
+      const { data: uploadData, error: uploadError } = await this.storageRepository.uploadFile(
+        'ImagenProductos',
+        fileName,
+        product.imagen_file
+      );
+
+      if (!uploadError && uploadData) {
+        if (product.imagen_url) {
+          const oldFileName = product.imagen_url.split('/').pop();
+          if (oldFileName) await this.storageRepository.removeImage('ImagenProductos', oldFileName);
+        }
+        publicImageUrl = uploadData.publicUrl;
+      }
+    }
+
+    // 2. Actualizamos el registro
+    const { data, error } = await supabase
+      .from("Registros")
+      .update({
+        titulo: product.titulo,
+        resena: product.resena,
+        imagen_url: publicImageUrl,
+        tipo: product.tipo,
+        genero: product.genero,
+        autor: product.autor,
+        fecha_fin: product.fecha_fin,
+        puntuacion: product.puntuacion
+      })
+      .eq("id_registro", product.id_registro)
+      .select();
+
+    return { data, error };
+  }
+
+
+  // =========================== DELETE ==========================
+  // Eliminar un producto por ID
+  async deleteProduct(id: number): Promise<{ data: any; error: any }> {
+
     const { data, error } = await supabase
       .from("Registros")
       .delete()
@@ -110,53 +155,10 @@ export class SupabaseProductRepository implements ProductRepository {
     return { data, error };
   }
 
-async updateProduct(product: Product & { imagen_file?: File }) {
-  let publicImageUrl = product.imagen_url;
 
-  // 1. Si el usuario seleccionó un archivo nuevo
-  if (product.imagen_file) {
-    const fileExt = product.imagen_file.name.split('.').pop();
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
-
-    // Subimos la nueva imagen
-    const { data: uploadData, error: uploadError } = await this.storageRepository.uploadFile(
-      'ImagenProductos',
-      fileName,
-      product.imagen_file
-    );
-
-    if (!uploadError && uploadData) {
-      // Borramos la imagen antigua si existía
-      if (product.imagen_url) {
-        const oldFileName = product.imagen_url.split('/').pop();
-        if (oldFileName) await this.storageRepository.removeImage('ImagenProductos', oldFileName);
-      }
-      publicImageUrl = uploadData.publicUrl;
-    }
-  }
-
-  // 2. Actualizamos con la URL correcta (la nueva o la que ya había)
-  const { data, error } = await supabase
-    .from("Registros")
-    .update({
-      titulo: product.titulo,
-      resena: product.resena,
-      imagen_url: publicImageUrl, // ¡Aquí usamos la variable procesada!
-      tipo: product.tipo,
-      genero: product.genero,
-      autor: product.autor,
-      fecha_fin: product.fecha_fin,
-      puntuacion: product.puntuacion
-    })
-    .eq("id_registro", product.id_registro)
-    .select();
-
-  return { data, error };
-}
-
-
-// Método para obtener todos los productos sin filtrar por usuario
-async fetchAllProducts() {
+  // ============================ ADMIN ==========================
+  // Obtener todos los productos sin filtrar por usuario
+  async fetchAllProducts() {
     const { data, error } = await supabase
       .from("Registros")
       .select("*")

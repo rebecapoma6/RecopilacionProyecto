@@ -1,77 +1,49 @@
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/useAuthStore"; // <-- He dejado la ruta con un solo ../ asumiendo que está en pages/
-import Button from "../components/form/Button"; 
-import Footer from "../components/footer/Footer";
+﻿import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
+import Button from "../components/form/Button";
 
 export default function PerfilUsuarioPage() {
   const navigate = useNavigate();
-  
-  // ✨ AQUÍ ESTABA EL FALLO: Ahora usamos sessionUser en lugar de session
   const sessionUser = useAuthStore((state) => state.sessionUser);
+  const isAdmin = useAuthStore((state) => state.isAdmin);
 
-  // Si no hay usuario logueado, mostramos un aviso
   if (!sessionUser) {
     return (
-      <div className="w-screen h-screen flex flex-col justify-between bg-neutral-100 font-sf-pro">
-        <div className="flex-grow flex justify-center items-center">
-          <p className="text-gray-500">No estás logueado. Inicia sesión para ver tu perfil.</p>
-        </div>
-        <Footer />
+      <div className="app-surface mx-auto flex min-h-[50vh] max-w-3xl items-center justify-center rounded-3xl border p-6 text-center shadow-sm">
+        No estás logueado. Inicia sesión para ver tu perfil.
       </div>
     );
   }
 
-  // ✨ Y cambiamos todo a sessionUser aquí también
   const email = sessionUser.user?.email || "Correo no disponible";
   const username = sessionUser.profile?.username || "Usuario";
-  
-  // Si no tiene avatar_url, le ponemos una imagen por defecto generada con sus iniciales
-  const avatarUrl = sessionUser.profile?.avatar_url || "https://ui-avatars.com/api/?name=" + username + "&background=random";
+  const avatarUrl = sessionUser.profile?.avatar_url || `https://ui-avatars.com/api/?name=${username}&background=random`;
 
   return (
-    <div className="min-h-screen flex flex-col bg-neutral-100 font-sf-pro">
-      
-      <div className="flex-grow flex justify-center items-center p-4">
-        <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl flex flex-col items-center">
-          
-          <h1 className="text-2xl font-bold text-primary-50 mb-6">Mi Perfil</h1>
-          
-          {/* Imagen del Avatar */}
-          <div className="w-32 h-32 mb-4 rounded-full overflow-hidden border-4 border-gray-100 shadow-sm">
-            <img 
-              src={avatarUrl} 
-              alt={`Avatar de ${username}`} 
-              className="w-full h-full object-cover"
-            />
+    <div className="mx-auto flex min-h-full w-full max-w-3xl items-center justify-center py-6">
+      <div className="app-surface-strong w-full rounded-3xl border p-8 shadow-xl">
+        <div className="flex flex-col items-center text-center">
+          <h1 className="mb-6 text-2xl font-bold">Mi perfil</h1>
+
+          <div className="mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-[var(--app-border)] shadow-sm">
+            <img src={avatarUrl} alt={`Avatar de ${username}`} className="h-full w-full object-cover" />
           </div>
 
-          {/* Datos del usuario */}
-          <h2 className="text-xl font-semibold text-gray-800">{username}</h2>
-          <p className="text-gray-500 mb-8">{email}</p>
+          <h2 className="text-xl font-semibold">{username}</h2>
+          <p className="app-muted mb-8">{email}</p>
 
-          {/* Botones de acción */}
-          <div className="w-full flex flex-col gap-3">
-            <Button
-              type="button"
-              onClick={() => navigate("/modificar-datos")}
-              className="w-full py-2 text-white font-medium rounded-lg bg-primary-50 hover:bg-primary-700 transition"
-            >
-              Modificar Perfil
+          <div className="flex w-full flex-col gap-3 sm:flex-row">
+            <Button type="button" onClick={() => navigate("/modificar-datos")} className="w-full">
+              Modificar perfil
             </Button>
-            
-            <Button
-              type="button"
-              onClick={() => navigate("/")}
-              className="w-full py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition"
-            >
-              Volver al inicio
-            </Button>
+            {!isAdmin && (
+              <Button type="button" onClick={() => navigate("/products")} variant="secondary" className="w-full">
+                Volver a la colección
+              </Button>
+            )}
           </div>
-
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }
