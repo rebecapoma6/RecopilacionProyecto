@@ -153,4 +153,15 @@ async updateProduct(product: Product & { imagen_file?: File }) {
 
   return { data, error };
 }
+
+
+// Método para obtener todos los productos sin filtrar por usuario
+async fetchAllProducts() {
+    const { data, error } = await supabase
+      .from("Registros")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    return { data: data as Product[] | [], error };
+  }
 }

@@ -5,36 +5,38 @@ import { supabase } from "./Client";
 import { SupabaseStorageRepository } from "./SupabaseStorageRepository";
 
 export class SupabaseUserRepository implements UserRepository {
-  async deleteUser(userId: string,avatar_url?: string): Promise<{ error?: any; }> {
+  
+  async deleteUser(userId: string): Promise<{ error?: any; }> {
   try {
-      // A. Si tiene foto, la borramos usando la API de Storage (LA VÍA LEGAL)
-      if (avatar_url) {
-        const parts = avatar_url.split('/avatars/');
-        const filePath = parts.length > 1 ? parts[1] : null;
-        if (filePath) {
-          // Esto es lo que Supabase te pide en el error
-          await supabase.storage.from('avatars').remove([filePath]);
-        }
-      }
-
-      // B. PASO CRUCIAL: "Limpiamos" el perfil manualmente desde la API
-      // Esto hace que el registro ya no esté vinculado a nada de Storage
-      await supabase
-        .from('Profiles')
-        .update({ avatar_url: null })
-        .eq('id', userId);
-
-      // C. Ahora que el usuario está "limpio", llamamos al RPC
-      const { error } = await supabase.rpc('admin_delete_user', {
-        target_user_id: userId
-      });
-
-      return { error };
-    } catch (error) {
-      console.error("Error en deleteUser:", error);
-      return { error };
+    // 1. LA VÍA LEGAL: Buscamos si el usuario tiene fotos en su carpeta
+    const { data: files } = await supabase.storage.from('avatars').list(userId);
+    
+    // 2. Si tiene fotos, las borramos usando la API de Storage
+    if (files && files.length > 0) {
+      const filesToRemove = files.map(file => `${userId}/${file.name}`);
+      await supabase.storage.from('avatars').remove(filesToRemove);
     }
+
+    // 3. Rompemos el vínculo en el perfil por seguridad
+    await supabase.from('Profiles').update({ avatar_url: null }).eq('id', userId);
+
+    // 4. Ahora sí, con la foto eliminada legalmente, borramos al usuario
+    const { error } = await supabase.rpc('admin_delete_user', {
+      target_user_id: userId
+    });
+
+    if (error) {
+      console.error("Error de Supabase al borrar usuario:", error.message);
+    }
+
+    return { error };
+  } catch (error) {
+    console.error("Error inesperado en deleteUser:", error);
+    return { error };
   }
+  }
+
+
   async updateUserRole(userId: string, newRole: string): Promise<{ error?: any; }> {
     try {
       // Actualizamos la tabla user_roles
@@ -200,4 +202,21 @@ export class SupabaseUserRepository implements UserRepository {
     const { data, error } = await supabase.auth.updateUser(payload);
     return { data, error };
   }
+
+  async resetPasswordForEmail(email: string): Promise<{ error?: any; }> {
+    const { error } = await supabase.auth.resetPasswordForEmail(
+            email, {
+            // OJO AQUÍ: Tienes que cambiar este enlace
+            redirectTo: "http://localhost:5173/actualizar-clave" 
+        });
+        
+        return { error: error || null };
+    
+  }
+
+  async updatePassword(newPassword: string): Promise<{ error?: any }> {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error: error || null };
+  }
+  
 }

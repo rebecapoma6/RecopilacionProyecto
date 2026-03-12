@@ -3,7 +3,7 @@ import { createUserRepository } from "../../database/repositories";
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from "sweetalert2";
 
-export default function AdminUsersTable(){
+export default function AdminUsersTable() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -41,7 +41,7 @@ export default function AdminUsersTable(){
 
     const handleSaveRole = async (userId: string) => {
         const { error } = await userRepository.updateUserRole(userId, newRole);
-        
+
         if (error) {
             toast.error("Error al actualizar el rol");
         } else {
@@ -56,20 +56,19 @@ export default function AdminUsersTable(){
 
         const result = await Swal.fire({
             title: '¿Estás segura?',
-            text: `El usuario "${user.username || user.email}" y todos sus datos serán eliminados permanentemente.`,            icon: 'warning',
+            text: `El usuario "${user.username || user.email}" y todos sus datos serán eliminados permanentemente.`, icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444', // Color rojo Tailwind (bg-red-500)
-            cancelButtonColor: '#9ca3af', // Color gris Tailwind (bg-gray-400)
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#9ca3af',
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar',
             customClass: {
-                popup: 'rounded-2xl' // Para que tenga bordes redondeados como tus cards
+                popup: 'rounded-2xl'
             }
         });
         if (result.isConfirmed) {
-            // AQUÍ: Pasamos ID y avatar_url al repositorio
-            const { error } = await userRepository.deleteUser(user.id, user.avatar_url);
-            
+            const { error } = await userRepository.deleteUser(user.id);
+
             if (error) {
                 toast.error("Error al eliminar el usuario");
                 console.error(error);
@@ -86,7 +85,7 @@ export default function AdminUsersTable(){
     return (
         <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
             <Toaster position="top-center" />
-            
+
             <table className="min-w-full border-collapse border border-gray-200">
                 <thead className="bg-gray-100">
                     <tr>
@@ -111,12 +110,12 @@ export default function AdminUsersTable(){
                                 {user.username || 'Sin nombre'}
                             </td>
                             <td className="border p-2 text-sm">{user.email}</td>
-                            
+
                             {/* COLUMNA DE ROL DINÁMICA */}
                             <td className="border p-2">
                                 {editingId === user.id ? (
-                                    <select 
-                                        value={newRole} 
+                                    <select
+                                        value={newRole}
                                         onChange={(e) => setNewRole(e.target.value)}
                                         className="border border-gray-300 rounded p-1 text-sm bg-white"
                                     >
@@ -133,18 +132,18 @@ export default function AdminUsersTable(){
                             <td className="border p-2 text-sm">
                                 {new Date(user.created_at).toLocaleDateString()}
                             </td>
-                            
+
                             {/* COLUMNA DE ACCIONES DINÁMICA */}
                             <td className="border p-2">
                                 {editingId === user.id ? (
                                     <div className="flex justify-center gap-2">
-                                        <button 
+                                        <button
                                             onClick={() => handleSaveRole(user.id)}
                                             className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition"
                                         >
                                             Guardar
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={handleCancelEdit}
                                             className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm transition"
                                         >
@@ -153,14 +152,14 @@ export default function AdminUsersTable(){
                                     </div>
                                 ) : (
                                     <div className="flex justify-center gap-2">
-                                        <button 
+                                        <button
                                             onClick={() => handleEditClick(user)}
                                             className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition"
                                         >
                                             Editar Rol
                                         </button>
-                                        {/* NUEVO BOTÓN PARA BORRAR */}
-                                        <button 
+                                    
+                                        <button
                                             onClick={() => handleDeleteUser(user)}
                                             className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition"
                                         >

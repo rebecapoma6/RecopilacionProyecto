@@ -19,5 +19,9 @@ export interface UserRepository {
 
   updateUserRole(userId: string, newRole: string): Promise<{ error?: any }>;
 
-  deleteUser(userId: string,avatar_url?: string): Promise<{ error?: any; }>;
+  deleteUser(userId: string): Promise<{ error?: any; }>;
+
+  resetPasswordForEmail(email: string): Promise<{ error?: any }>;
+
+  updatePassword(newPassword: string): Promise<{ error?: any }>;
 }

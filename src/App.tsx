@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 import LandingLayout from './layouts/LandingLayout';
 import AuthLayout from './layouts/AuthLayout';
 import AppLayout from './layouts/AppLayout';
@@ -9,18 +8,16 @@ import HomePage from './pages/HomePage';
 import IniciarSesionPage from './pages/IniciarSesionPage';
 import RegistroPage from './pages/RegistroPage';
 import ProductosSupabase from './pages/ProductosSupabase';
-//import AgregarItemsPage from "./pages/AgregarItemsPage";
 import PageRecuperarPassPage from './pages/RecuperarPassPage';
 import ModificarDatosPage from "./pages/ModificarDatosPage";
-
-
 import PerfilUsuarioPage from './pages/PerfilUsuarioPage'; 
-
 import ProtectedRoute from "./router/ProtectedRoute";
 import PublicRoute from "./router/PublicRoute";
 import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./router/AdminRoute";
 import AgregarItemsPage from "./pages/AgregarItemsPage";
+import EstadisticasPage from "./pages/EstadisticasPage";
+import ActualizarClave from "./utils/ActualizarClave";
 
 
 const router = createBrowserRouter([
@@ -28,6 +25,7 @@ const router = createBrowserRouter([
     element: <LandingLayout />, //esta sera como ruta la pública general
     children: [
       { path: "/", element: <HomePage /> },
+      { path: "/actualizar-clave", element: <ActualizarClave /> },
     ],
   },
 
@@ -52,6 +50,7 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "/products", element: <ProductosSupabase/> },
+           { path: "/agregar-items", element: <AgregarItemsPage /> },
           { path: "/modificar-datos", element: <ModificarDatosPage/>},
           { path: "/perfil", element: <PerfilUsuarioPage/>} 
         ]
@@ -66,7 +65,7 @@ const router = createBrowserRouter([
         element: <AppLayout />, 
         children: [
           { path: "/vistaAdmin", element: <AdminPage/>},
-          // { path: "/estadisticas", element: <GraficoPage/> }
+          { path: "/estadisticas", element: <EstadisticasPage/> }
         ]
       }
     ]
