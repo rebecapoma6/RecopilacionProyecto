@@ -5,6 +5,8 @@ import InputField from "./InputField";
 import ImageInput from "./ImageInput";
 import { SupabaseUserRepository } from "../../database/supabase/SupabaseUserRepository";
 import { useAuthStore } from "../../store/useAuthStore";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const userRepository = new SupabaseUserRepository();
 
@@ -25,6 +27,8 @@ interface ErrorsProps {
 export default function EditarPerfil() {
   const sessionUser = useAuthStore((state) => state.sessionUser);
   const setSession = useAuthStore((state) => state.setSession);
+
+  const navigate = useNavigate();
 
   const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
     username: "",
@@ -142,17 +146,20 @@ export default function EditarPerfil() {
       const { data, error } = await userRepository.updateUser(dataToSend);
 
       if (error) {
-        alert("Error al actualizar: " + (error.message || "Error desconocido"));
+        toast.error("Error al actualizar: " + (error.message || "Error desconocido"));
       } else {
         if (data?.user) {
-          await setSession(data, data.user);
+          setSession(data, data.user);
           setAvatarUrl(data.profile?.avatar_url || null);
         }
-        alert("Datos actualizados correctamente");
+        toast.success("Datos actualizados correctamente");
+        setTimeout(() => {
+          navigate("/perfil"); 
+        }, 1000);
       }
     } catch (err) {
       console.error(err);
-      alert("Ocurrió un error inesperado");
+      toast.error("Ocurrió un error inesperado");
     } finally {
       setLoading(false);
     }

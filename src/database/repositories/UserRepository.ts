@@ -16,7 +16,7 @@ export interface UserRepository {
   getCurrentUser(): Promise<{ data?: any; error?: any }>;
   updateUser(updates: UpdateUserData): Promise<{ data?: SessionUser; error?: any }>;
   updateUserRole(userId: string, newRole: string): Promise<{ error?: any }>;
-
+login(email: string, password: string): Promise<{ data?: SessionUser; error?: any }>
   deleteUser(userId: string): Promise<{ error?: any; }>;
 
   resetPasswordForEmail(email: string): Promise<{ error?: any }>;
