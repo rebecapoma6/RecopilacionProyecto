@@ -17,6 +17,7 @@ import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./router/AdminRoute";
 import AgregarItemsPage from "./pages/AgregarItemsPage";
 import EstadisticasPage from "./pages/EstadisticasPage";
+import ActualizarClave from "./utils/ActualizarClave";
 
 
 const router = createBrowserRouter([
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
           { path: "/iniciarSesion", element: <IniciarSesionPage/> },
           { path: "/registro", element: <RegistroPage/> },
           { path: "/recuperarPass", element: <PageRecuperarPassPage/>},
+          { path: "/actualizar-clave", element: <ActualizarClave/> },
         ]
       }
     ]
