@@ -20,8 +20,8 @@ export default function InputFieldClase({
 
       <input
         id={id}
-        className={`app-input block w-full rounded-xl border p-3 outline-none transition focus:border-primary-600 focus:ring-2 focus:ring-primary-300 ${className}`.trim()}
-        {...props}
+className={`app-input block w-full rounded-xl border p-3 outline-none transition focus:border-primary-600 focus:ring-2 focus:ring-primary-300 ${className}`}        
+{...props}
       />
 
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}

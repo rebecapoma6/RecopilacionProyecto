@@ -114,8 +114,8 @@ export default function IniciarSesion() {
           <Button type="submit" disabled={loading} className="w-full">{loading ? t('auth.login.submitting') : t('auth.login.submit')}</Button>
         </div>
 
-        <div className="border-t border-[var(--app-border)] pt-5 text-center">
-          <p className="app-muted text-sm">{t('auth.login.noAccount')}</p>
+<div className="border-t border-gray-300 pt-5 text-center">          
+<p className="app-muted text-sm">{t('auth.login.noAccount')}</p>
           <Link to="/registro" className="mt-2 inline-block font-semibold text-primary-600 transition hover:text-primary-700">
             {t('auth.login.createNow')}
           </Link>

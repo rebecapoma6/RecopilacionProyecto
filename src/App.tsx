@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingLayout from './layouts/LandingLayout';
 import AuthLayout from './layouts/AuthLayout';
 import AppLayout from './layouts/AppLayout';
+import { Toaster } from 'react-hot-toast';
+
 
 //Nuestras páginas actuales
 import HomePage from './pages/HomePage';
@@ -73,8 +75,13 @@ const router = createBrowserRouter([
 
 ])
 
-function App(){
-  return <RouterProvider router={router} />;
+function App() {
+  return (
+    <>
+      <Toaster position="top-center" />
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;

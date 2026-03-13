@@ -3,6 +3,8 @@ import type { Product } from '../../interfaces/Products';
 import { SupabaseProductRepository } from '../../database/supabase/SupabaseProductRepository';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
+
 
 interface ProductCardProps {
   product: Product;
@@ -23,7 +25,7 @@ const title = product.titulo ?? t('common.notAvailable');
     const confirmar = window.confirm(t('products.card.deleteConfirm', { title }));    if (confirmar) {
       const { error } = await repository.deleteProduct(product.id_registro);
       if (error) {
-        alert(t('products.card.deleteError'));
+toast.error(t('products.card.deleteError'));
         console.error(error);
       } else if (onDelete) {
         onDelete(product.id_registro);

@@ -6,6 +6,8 @@ import ImageInput from "./ImageInput";
 import { SupabaseUserRepository } from "../../database/supabase/SupabaseUserRepository";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useTranslation } from "react-i18next";
+import toast from 'react-hot-toast';
+
 
 const userRepository = new SupabaseUserRepository();
 
@@ -62,7 +64,7 @@ export default function EditarPerfil() {
       try {
         const { data: user, error } = await userRepository.getCurrentUser();
         if (error || !user) {
-          alert(t('profile.form.loadProfileError'));
+toast.error(t('profile.form.loadProfileError'));
           return;
         }
 
@@ -74,7 +76,7 @@ export default function EditarPerfil() {
         });
       } catch (err) {
         console.error(err);
-        alert(t('profile.form.loadError'));
+toast.error(t('profile.form.loadError'));
       }
     };
 
@@ -144,17 +146,17 @@ export default function EditarPerfil() {
       const { data, error } = await userRepository.updateUser(dataToSend);
 
       if (error) {
-        alert(t('profile.form.updateError', { message: error.message || t('profile.form.unknownError') }));
+toast.error(t('profile.form.updateError', { message: error.message || t('profile.form.unknownError') }));
       } else {
         if (data?.user) {
           await setSession(data, data.user);
           setAvatarUrl(data.profile?.avatar_url || null);
         }
-        alert(t('profile.form.updateSuccess'));
+toast.success(t('profile.form.updateSuccess'));
       }
     } catch (err) {
       console.error(err);
-      alert(t('common.unexpectedError'));
+toast.error(t('common.unexpectedError'));
     } finally {
       setLoading(false);
     }
