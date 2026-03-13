@@ -93,13 +93,13 @@ export default function EstadisticasDashboard() {
         </div>
 
         <div className="app-surface-strong rounded-2xl border border-l-4 border-l-green-500 p-6 shadow-md">
-          <h3 className="app-muted text-sm font-bold uppercase">{t('totalProducts')}</h3>
+          <h3 className="app-muted text-sm font-bold uppercase">{t('admin.stats.totalProducts')}</h3>
           <p className="mt-2 text-4xl font-extrabold text-green-600">{totalProductos}</p>
         </div>
       </div>
 
       <div className="app-surface-strong rounded-2xl border p-6 shadow-md">
-        <h3 className="mb-6 text-center text-lg font-bold">{t('itemsLast7Days')}</h3>
+        <h3 className="mb-6 text-center text-lg font-bold">{t('admin.stats.itemsLast7Days')}</h3>
 
         <div style={{ width: '100%', height: 350 }}>
           <ResponsiveContainer>
