@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import gsap from 'gsap';
@@ -96,8 +96,8 @@ export default function HeroSection() {
   return (
     <section ref={seccionRef} className="pt-4 pb-12 md:pt-6 md:pb-16">
       <div ref={heroRef} className="relative min-h-screen overflow-hidden rounded-3xl bg-white/40 shadow-xl">
-        <div className="absolute inset-0 overflow-hidden bg-gradient-to-b from-transparent to-white/10">
-          <div className={`absolute inset-0 bg-gradient-to-b ${claseFondo}`} />
+<div className="absolute inset-0 overflow-hidden bg-linear-to-r from-transparent to-white/10">
+  <div className={`absolute inset-0 bg-linear-to-r ${claseFondo}`} />
           <div className="absolute left-0 top-0 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl" />
           <div className="absolute right-0 bottom-0 h-72 w-72 rounded-full bg-blue-300/20 blur-3xl" />
         </div>
