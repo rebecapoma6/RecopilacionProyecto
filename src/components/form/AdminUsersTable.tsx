@@ -2,8 +2,11 @@
 import { createUserRepository } from "../../database/repositories";
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 export default function AdminUsersTable() {
+  const { t } = useTranslation();
+  
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +20,7 @@ export default function AdminUsersTable() {
       const { data, error } = await userRepository.fetchAdminUsersList();
 
       if (error) {
-        setError("No tienes permisos o hubo un error al cargar los usuarios.");
+        setError(t('admin.users.loadError'));
       } else if (data) {
         setUsers(data);
       }
@@ -38,9 +41,9 @@ export default function AdminUsersTable() {
     const { error } = await userRepository.updateUserRole(userId, newRole);
 
     if (error) {
-      toast.error("Error al actualizar el rol");
+      toast.error(t('admin.users.roleUpdateError'));
     } else {
-      toast.success("Rol actualizado correctamente");
+      toast.success(t('admin.users.roleUpdated'));
       setUsers(users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
       setEditingId(null);
     }
@@ -48,14 +51,14 @@ export default function AdminUsersTable() {
 
   const handleDeleteUser = async (user: any) => {
     const result = await Swal.fire({
-      title: '¿Estás segura?',
-      text: `El usuario "${user.username || user.email}" y todos sus datos serán eliminados permanentemente.`,
+      title: t('admin.users.confirmDeleteTitle'),
+      text: t('admin.deleteUserConfirm', { username: user.username || user.email }),
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#9ca3af',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
+      confirmButtonText: t('admin.users.confirmDeleteAction'),
+      cancelButtonText: t('common.cancel'),
       customClass: { popup: 'rounded-2xl' },
     });
 
@@ -63,16 +66,16 @@ export default function AdminUsersTable() {
       const { error } = await userRepository.deleteUser(user.id);
 
       if (error) {
-        toast.error("Error al eliminar el usuario");
+        toast.error(t('admin.users.deleteUserError'));
         console.error(error);
       } else {
-        toast.success("Usuario eliminado correctamente");
+        toast.success(t('admin.users.deleteUserSuccess'));
         setUsers(users.filter((u) => u.id !== user.id));
       }
     }
   };
 
-  if (loading) return <p className="app-muted">Cargando lista de usuarios...</p>;
+  if (loading) return <p className="app-muted">{t('admin.users.loading')}</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
@@ -82,11 +85,11 @@ export default function AdminUsersTable() {
       <table className="min-w-full border-collapse rounded-2xl border border-[var(--app-border)] overflow-hidden">
         <thead className="app-surface">
           <tr>
-            <th className="border border-[var(--app-border)] p-3 text-left">Usuario</th>
-            <th className="border border-[var(--app-border)] p-3 text-left">Email</th>
-            <th className="border border-[var(--app-border)] p-3 text-left">Rol</th>
-            <th className="border border-[var(--app-border)] p-3 text-left">Registro</th>
-            <th className="border border-[var(--app-border)] p-3 text-left">Acciones</th>
+            <th className="border border-[var(--app-border)] p-3 text-left">{t('admin.users.columns.user')}</th>
+            <th className="border border-[var(--app-border)] p-3 text-left">{t('admin.users.columns.email')}</th>
+            <th className="border border-[var(--app-border)] p-3 text-left">{t('admin.users.columns.role')}</th>
+            <th className="border border-[var(--app-border)] p-3 text-left">{t('admin.users.columns.createdAt')}</th>
+            <th className="border border-[var(--app-border)] p-3 text-left">{t('admin.users.columns.actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -95,7 +98,7 @@ export default function AdminUsersTable() {
               <td className="border border-[var(--app-border)] p-3">
                 <div className="flex items-center gap-3">
                   {user.avatar_url ? (
-                    <img src={user.avatar_url} alt="avatar" className="h-8 w-8 rounded-full object-cover" />
+                    <img src={user.avatar_url} alt={t('admin.users.avatarAlt')} className="h-8 w-8 rounded-full object-cover" />
                   ) : (
                     <div className="app-chip flex h-8 w-8 items-center justify-center rounded-full border text-sm font-medium">
                       {user.username?.charAt(0).toUpperCase() || 'U'}
@@ -112,8 +115,8 @@ export default function AdminUsersTable() {
                     onChange={(e) => setNewRole(e.target.value)}
                     className="app-input rounded-lg border px-2 py-1 text-sm"
                   >
-                    <option value="user">USER</option>
-                    <option value="admin">ADMIN</option>
+                    <option value="user">{t('admin.roles.user')}</option>
+                    <option value="admin">{t('admin.roles.admin')}</option>
                   </select>
                 ) : (
                   <span className={`inline-flex rounded-full px-2 py-1 text-xs font-bold uppercase ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'app-chip border'}`}>
@@ -126,19 +129,19 @@ export default function AdminUsersTable() {
                 {editingId === user.id ? (
                   <div className="flex flex-wrap gap-2">
                     <button onClick={() => handleSaveRole(user.id)} className="rounded-lg bg-green-500 px-3 py-1 text-sm text-white transition hover:bg-green-600">
-                      Guardar
+                      {t('actions.save')}
                     </button>
                     <button onClick={handleCancelEdit} className="rounded-lg bg-gray-400 px-3 py-1 text-sm text-white transition hover:bg-gray-500">
-                      Cancelar
+                      {t('actions.cancel')}
                     </button>
                   </div>
                 ) : (
                   <div className="flex flex-wrap gap-2">
                     <button onClick={() => handleEditClick(user)} className="rounded-lg bg-blue-500 px-3 py-1 text-sm text-white transition hover:bg-blue-600">
-                      Editar Rol
+                      {t('admin.users.editRole')}
                     </button>
                     <button onClick={() => handleDeleteUser(user)} className="rounded-lg bg-red-500 px-3 py-1 text-sm text-white transition hover:bg-red-600">
-                      Borrar
+                      {t('actions.delete')}
                     </button>
                   </div>
                 )}

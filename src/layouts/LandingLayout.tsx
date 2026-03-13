@@ -1,28 +1,31 @@
-﻿import { Outlet } from "react-router-dom";
-import { BookOpen, Gamepad2, Zap } from "lucide-react";
-import Navbar from "../components/navbar/Navbar";
-import Footer from "../components/footer/Footer";
-import CardHome from "../components/home/CardHome";
-
-const features = [
-  {
-    title: "Gestiona tus libros",
-    content: "Añade todos tus libros favoritos, registra autores, año de publicación y mucho más.",
-    icon: <BookOpen size={28} strokeWidth={2.2} />,
-  },
-  {
-    title: "Catálogo de videojuegos",
-    content: "Lleva el control de tu colección de videojuegos, desde clásicos hasta los más recientes.",
-    icon: <Gamepad2 size={28} strokeWidth={2.2} />,
-  },
-  {
-    title: "Rápido y sencillo",
-    content: "Añade, edita y elimina items de tu colección con solo unos clics. Interfaz intuitiva.",
-    icon: <Zap size={28} strokeWidth={2.2} />,
-  },
-];
+import { Outlet } from 'react-router-dom';
+import { BookOpen, Gamepad2, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import Navbar from '../components/navbar/Navbar';
+import Footer from '../components/footer/Footer';
+import CardHome from '../components/home/CardHome';
 
 export default function LandingLayout() {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      title: t('home.features.books.title'),
+      content: t('home.features.books.content'),
+      icon: <BookOpen size={28} strokeWidth={2.2} />,
+    },
+    {
+      title: t('home.features.games.title'),
+      content: t('home.features.games.content'),
+      icon: <Gamepad2 size={28} strokeWidth={2.2} />,
+    },
+    {
+      title: t('home.features.simple.title'),
+      content: t('home.features.simple.content'),
+      icon: <Zap size={28} strokeWidth={2.2} />,
+    },
+  ];
+
   return (
     <div className="app-shell flex min-h-screen flex-col">
       <Navbar />

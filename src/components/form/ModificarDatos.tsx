@@ -5,8 +5,7 @@ import InputField from "./InputField";
 import ImageInput from "./ImageInput";
 import { SupabaseUserRepository } from "../../database/supabase/SupabaseUserRepository";
 import { useAuthStore } from "../../store/useAuthStore";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const userRepository = new SupabaseUserRepository();
 
@@ -25,10 +24,9 @@ interface ErrorsProps {
 }
 
 export default function EditarPerfil() {
+  const { t } = useTranslation();
   const sessionUser = useAuthStore((state) => state.sessionUser);
   const setSession = useAuthStore((state) => state.setSession);
-
-  const navigate = useNavigate();
 
   const [datosFormulario, setDatosFormulario] = useState<DatosFormularioProps>({
     username: "",
@@ -64,7 +62,7 @@ export default function EditarPerfil() {
       try {
         const { data: user, error } = await userRepository.getCurrentUser();
         if (error || !user) {
-          alert("No se pudo cargar tu perfil. Inicia sesión nuevamente.");
+          alert(t('profile.form.loadProfileError'));
           return;
         }
 
@@ -76,7 +74,7 @@ export default function EditarPerfil() {
         });
       } catch (err) {
         console.error(err);
-        alert("Error al cargar perfil");
+        alert(t('profile.form.loadError'));
       }
     };
 
@@ -97,7 +95,7 @@ export default function EditarPerfil() {
 
     if (name === "passwordRepeat") {
       if (datosFormulario.password && value !== datosFormulario.password) {
-        setErrors((prev) => ({ ...prev, passwordRepeat: "Las contraseñas no coinciden" }));
+        setErrors((prev) => ({ ...prev, passwordRepeat: t('validation.passwordsNoMatch')}));
       } else {
         setErrors((prev) => ({ ...prev, passwordRepeat: "" }));
       }
@@ -146,20 +144,17 @@ export default function EditarPerfil() {
       const { data, error } = await userRepository.updateUser(dataToSend);
 
       if (error) {
-        toast.error("Error al actualizar: " + (error.message || "Error desconocido"));
+        alert(t('profile.form.updateError', { message: error.message || t('profile.form.unknownError') }));
       } else {
         if (data?.user) {
-          setSession(data, data.user);
+          await setSession(data, data.user);
           setAvatarUrl(data.profile?.avatar_url || null);
         }
-        toast.success("Datos actualizados correctamente");
-        setTimeout(() => {
-          navigate("/perfil"); 
-        }, 1000);
+        alert(t('profile.form.updateSuccess'));
       }
     } catch (err) {
       console.error(err);
-      toast.error("Ocurrió un error inesperado");
+      alert(t('common.unexpectedError'));
     } finally {
       setLoading(false);
     }
@@ -168,26 +163,26 @@ export default function EditarPerfil() {
   return (
     <div>
       <div className="mb-6 text-left">
-        <p className="app-muted mt-1 text-sm">Actualiza tu información personal y tu foto de perfil.</p>
+        <p className="app-muted mt-1 text-sm">{t('profile.form.subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="app-surface rounded-2xl border p-4">
-          <p className="mb-3 text-sm font-medium">Foto de perfil</p>
+          <p className="mb-3 text-sm font-medium">{t('profile.form.avatarTitle')}</p>
           <ImageInput name="avatar-perfil" defaultImageUrl={avatarUrl} onFileSelect={handleAvatarChange} />
         </div>
 
-        <InputField id="username" label="Nombre de usuario" name="username" type="text" placeholder="Tu nombre de usuario" value={datosFormulario.username} onChange={handleChange} onBlur={handleBlur} error={errors.username} />
-        <InputField id="email" label="Correo electrónico" name="email" type="email" placeholder="Tu correo electrónico" value={datosFormulario.email} onChange={handleChange} onBlur={handleBlur} error={errors.email} />
-        <InputField id="password" label="Nueva contraseña (opcional)" name="password" type="password" placeholder="Nueva contraseña" value={datosFormulario.password} onChange={handleChange} onBlur={handleBlur} error={errors.password} />
-        <InputField id="passwordRepeat" label="Repetir nueva contraseña" name="passwordRepeat" type="password" placeholder="Repetir nueva contraseña" value={datosFormulario.passwordRepeat} onChange={handleChange} onBlur={handleBlur} error={errors.passwordRepeat} />
+        <InputField id="username" label={t('profile.form.usernameLabel')} name="username" type="text" placeholder={t('profile.form.usernamePlaceholder')} value={datosFormulario.username} onChange={handleChange} onBlur={handleBlur} error={errors.username} />
+        <InputField id="email" label={t('profile.form.emailLabel')} name="email" type="email" placeholder={t('profile.form.emailPlaceholder')} value={datosFormulario.email} onChange={handleChange} onBlur={handleBlur} error={errors.email} />
+        <InputField id="password" label={t('profile.form.newPasswordLabel')} name="password" type="password" placeholder={t('profile.form.newPasswordPlaceholder')} value={datosFormulario.password} onChange={handleChange} onBlur={handleBlur} error={errors.password} />
+        <InputField id="passwordRepeat" label={t('profile.form.repeatNewPasswordLabel')} name="passwordRepeat" type="password" placeholder={t('profile.form.repeatNewPasswordPlaceholder')} value={datosFormulario.passwordRepeat} onChange={handleChange} onBlur={handleBlur} error={errors.passwordRepeat} />
 
         <div className="flex flex-col gap-3 pt-3 sm:flex-row">
           <Button type="button" onClick={() => window.history.back()} variant="secondary" className="w-full">
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Guardando..." : "Guardar cambios"}
+            {loading ? t('profile.form.saving') : t('profile.form.saveChanges')}
           </Button>
         </div>
       </form>

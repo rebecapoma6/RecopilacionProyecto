@@ -241,19 +241,4 @@ export class SupabaseUserRepository implements UserRepository {
     const { data: { user }, error } = await supabase.auth.getUser();
     return { data: user, error };
   }
-  async resetPasswordForEmail(email: string): Promise<{ error?: any; }> {
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      email, {
-      // Cambios en este enlace
-      redirectTo: "http://localhost:5173/actualizar-clave"
-    });
-
-    return { error: error || null };
-
-  }
-
-  async updatePassword(newPassword: string): Promise<{ error?: any }> {
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    return { error: error || null };
-  }
 }

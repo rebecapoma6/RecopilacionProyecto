@@ -2,6 +2,7 @@
 import { createProductRepository, createUserRepository } from "../../database/repositories";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, Legend } from "recharts";
 import { useThemeStore } from "../../store/useThemeStore";
+import { useTranslation } from "react-i18next";
 
 export default function EstadisticasDashboard() {
   const [totalUsuarios, setTotalUsuarios] = useState(0);
@@ -9,9 +10,12 @@ export default function EstadisticasDashboard() {
   const [datosGrafica, setDatosGrafica] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const theme = useThemeStore((state) => state.theme);
+  const { t } = useTranslation();
+
 
   const userRepository = createUserRepository();
   const productRepository = createProductRepository();
+
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -78,24 +82,24 @@ export default function EstadisticasDashboard() {
     color: chartColors.label,
   };
 
-  if (loading) return <p className="app-muted py-10 text-center">Cargando estadísticas...</p>;
+  if (loading) return <p className="app-muted py-10 text-center">{t('admin.stats.loading')}</p>;
 
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="app-surface-strong rounded-2xl border border-l-4 border-l-blue-500 p-6 shadow-md">
-          <h3 className="app-muted text-sm font-bold uppercase">Clientes Registrados</h3>
+          <h3 className="app-muted text-sm font-bold uppercase">{t('admin.stats.registeredClients')}</h3>
           <p className="mt-2 text-4xl font-extrabold text-blue-600">{totalUsuarios}</p>
         </div>
 
         <div className="app-surface-strong rounded-2xl border border-l-4 border-l-green-500 p-6 shadow-md">
-          <h3 className="app-muted text-sm font-bold uppercase">Total Productos (Catálogo)</h3>
+          <h3 className="app-muted text-sm font-bold uppercase">{t('totalProducts')}</h3>
           <p className="mt-2 text-4xl font-extrabold text-green-600">{totalProductos}</p>
         </div>
       </div>
 
       <div className="app-surface-strong rounded-2xl border p-6 shadow-md">
-        <h3 className="mb-6 text-center text-lg font-bold">Registro de Ítems (Últimos 7 días)</h3>
+        <h3 className="mb-6 text-center text-lg font-bold">{t('itemsLast7Days')}</h3>
 
         <div style={{ width: '100%', height: 350 }}>
           <ResponsiveContainer>
@@ -125,8 +129,8 @@ export default function EstadisticasDashboard() {
               />
               <Legend verticalAlign="top" height={36} wrapperStyle={legendStyle} />
 
-              <Area type="monotone" dataKey="libros" name="Libros Registrados" stroke="#8884d8" fillOpacity={1} fill="url(#colorLibros)" isAnimationActive={true} />
-              <Area type="monotone" dataKey="videojuegos" name="Videojuegos Registrados" stroke="#82ca9d" fillOpacity={1} fill="url(#colorJuegos)" isAnimationActive={true} />
+              <Area type="monotone" dataKey="libros" name={t('admin.stats.booksRegistered')} stroke="#8884d8" fillOpacity={1} fill="url(#colorLibros)" isAnimationActive={true} />
+              <Area type="monotone" dataKey="videojuegos" name={t('admin.stats.gamesRegistered')} stroke="#82ca9d" fillOpacity={1} fill="url(#colorJuegos)" isAnimationActive={true} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
