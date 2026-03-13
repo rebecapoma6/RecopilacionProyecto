@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 export default function AdminUsersTable() {
   const { t } = useTranslation();
-  
+
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,9 +52,7 @@ export default function AdminUsersTable() {
   const handleDeleteUser = async (user: any) => {
     const result = await Swal.fire({
       title: t('admin.users.confirmDeleteTitle'),
-      text: t('admin.deleteUserConfirm', { username: user.username || user.email }),
-      icon: 'warning',
-      showCancelButton: true,
+      text: t('admin.users.confirmDeleteText' as any, { user: user.username || user.email }), showCancelButton: true,
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#9ca3af',
       confirmButtonText: t('admin.users.confirmDeleteAction'),

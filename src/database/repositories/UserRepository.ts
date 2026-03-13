@@ -19,4 +19,6 @@ export interface UserRepository {
   deleteUser(userId: string): Promise<{ error?: any }>;
   login(email: string, password: string): Promise<{ data?: SessionUser; error?: any }>;
   logout(): Promise<{ error?: any }>;
+  updatePassword(newPassword: string): Promise<{ error?: any }>;
+  resetPasswordForEmail(email: string): Promise<{ error?: any; }>;
 }

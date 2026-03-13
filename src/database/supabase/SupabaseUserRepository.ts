@@ -5,6 +5,21 @@ import { supabase } from "./Client";
 import { SupabaseStorageRepository } from "./SupabaseStorageRepository";
 
 export class SupabaseUserRepository implements UserRepository {
+
+  async resetPasswordForEmail(email: string): Promise<{ error?: any; }> {
+    const currentOrigin = window.location.origin;
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      email, {
+      //Tienes que cambiar este enlace
+      redirectTo: `${currentOrigin}/actualizar-clave`
+    });
+
+    return { error: error || null };
+  }
+  async updatePassword(newPassword: string): Promise<{ error?: any; }> {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error: error || null };
+  }
   storageRepository = new SupabaseStorageRepository();
 
   async createUser(data: RegisterData): Promise<{ data?: SessionUser; error?: any }> {
