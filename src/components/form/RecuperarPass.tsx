@@ -31,7 +31,7 @@ export default function RecuperarPass() {
             return;
         }
         // Lógica de envío...
-        setEnviado(true);
+        setLoading(true);
 
         try {
             if (!formData.email) {
