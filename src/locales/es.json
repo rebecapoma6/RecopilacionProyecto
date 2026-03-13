@@ -1,0 +1,274 @@
+{
+  "common": {
+    "brand": "StoryPlay",
+    "close": "Cerrar",
+    "back": "Volver",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "update": "Actualizar",
+    "loading": "Cargando...",
+    "notAvailable": "No disponible",
+    "noImage": "Sin imagen",
+    "unexpectedError": "Ocurrió un error inesperado."
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "ja": "Japonés"
+  },
+  "navbar": {
+    "logoAlt": "Logo de StoryPlay",
+    "avatarAlt": "Avatar de {{user}}",
+    "greeting": "Hola, {{user}}",
+    "userFallback": "Usuario",
+    "collection": "Colección",
+    "profile": "Perfil",
+    "admin": "Administrador",
+    "stats": "Estadísticas",
+    "logout": "Cerrar sesión",
+    "login": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "themeToDark": "Activar modo oscuro",
+    "themeToLight": "Activar modo claro",
+    "language": "Idioma"
+  },
+  "home": {
+    "hero": {
+      "title": "Tu biblioteca personal de libros y videojuegos",
+      "subtitle": "Organiza, gestiona y lleva el control de toda tu colección en un solo lugar. Nunca olvides que libros has leído o que juegos tienes pendientes.",
+      "start": "Comenzar gratis",
+      "goToCollection": "Ir a mi colección",
+      "haveAccount": "Ya tengo cuenta"
+    },
+    "features": {
+      "books": {
+        "title": "Gestiona tus libros",
+        "content": "Añade todos tus libros favoritos, registra autores, año de publicación y mucho más."
+      },
+      "games": {
+        "title": "Catálogo de videojuegos",
+        "content": "Lleva el control de tu colecci?n de videojuegos, desde clásicos hasta los más recientes."
+      },
+      "simple": {
+        "title": "Rápido y sencillo",
+        "content": "Añade, edita y elimina elementos de tu colección con solo unos clics. Interfaz intuitiva."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "© 2026 StoryPlay. Tu biblioteca personal en la nube."
+  },
+  "auth": {
+    "fields": {
+      "emailLabel": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "usernameLabel": "Nombre de usuario",
+      "usernamePlaceholder": "Tu nombre de usuario",
+      "emailFullLabel": "Correo electrónico",
+      "emailFullPlaceholder": "Tu correo electrñinico",
+      "passwordRepeatLabel": "Repetir contraseña",
+      "passwordRepeatPlaceholder": "Repite tu contraseña",
+      "avatarOptional": "Foto de perfil opcional"
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Ingresa tus credenciales para acceder a StoryPlay.",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "submitting": "Entrando...",
+      "noAccount": "¿Todavía no eres parte de StoryPlay?",
+      "createNow": "Crea tu cuenta ahora",
+      "invalidCredentials": "Credenciales inválidas",
+      "userInfoError": "No se pudo recuperar la información del usuario",
+      "welcomeBack": "Bienvenido de nuevo",
+      "connectionError": "Ocurrió un error de conexión"
+    },
+    "register": {
+      "title": "Registro",
+      "subtitle": "Crea una nueva cuenta para comenzar.",
+      "submit": "Registrarse",
+      "submitting": "Registrando...",
+      "emailUnavailable": "Este email no se encuentra disponible",
+      "registerError": "Error al registrar: {{message}}",
+      "welcomeUser": "Bienvenido {{user}}"
+    },
+    "recover": {
+      "title": "Recuperar acceso",
+      "subtitle": "Te enviaremos indicaciones a tu correo electrónico.",
+      "submit": "Enviar email",
+      "inbox": "Revisa tu bandeja de entrada.",
+      "backHome": "Volver al inicio"
+    }
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "notLoggedIn": "No estás logueado. Inicia sesión para ver tu perfil.",
+    "unavailableEmail": "Correo no disponible",
+    "editProfile": "Modificar perfil",
+    "backToCollection": "Volver a la colección",
+    "editModalTitle": "Editar perfil",
+    "avatarAlt": "Avatar de {{user}}",
+    "form": {
+      "subtitle": "Actualiza tu información personal y tu foto de perfil.",
+      "avatarTitle": "Foto de perfil",
+      "usernameLabel": "Nombre de usuario",
+      "usernamePlaceholder": "Tu nombre de usuario",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "Tu correo electrónico",
+      "newPasswordLabel": "Nueva contraseña (opcional)",
+      "newPasswordPlaceholder": "Nueva contraseña",
+      "repeatNewPasswordLabel": "Repetir nueva contraseña",
+      "repeatNewPasswordPlaceholder": "Repetir nueva contraseña",
+      "saving": "Guardando...",
+      "saveChanges": "Guardar cambios",
+      "loadProfileError": "No se pudo cargar tu perfil. Inicia sesión nuevamente.",
+      "loadError": "Error al cargar perfil",
+      "updateError": "Error al actualizar: {{message}}",
+      "unknownError": "Error desconocido",
+      "updateSuccess": "Datos actualizados correctamente"
+    }
+  },
+  "admin": {
+    "users": {
+      "title": "Panel de Administración de Usuarios",
+      "description": "Aquí puedes ver a todos los usuarios registrados en la plataforma y gestionar sus roles.",
+      "loading": "Cargando lista de usuarios...",
+      "loadError": "No tienes permisos o hubo un error al cargar los usuarios.",
+      "columns": {
+        "user": "Usuario",
+        "email": "Email",
+        "role": "Rol",
+        "createdAt": "Registro",
+        "actions": "Acciones"
+      },
+      "noName": "Sin nombre",
+      "avatarAlt": "Avatar de {{user}}",
+      "roleUpdated": "Rol actualizado correctamente",
+      "roleUpdateError": "Error al actualizar el rol",
+      "deleteUserError": "Error al eliminar el usuario",
+      "deleteUserSuccess": "Usuario eliminado correctamente",
+      "confirmDeleteTitle": "¿Estás segura?",
+      "confirmDeleteText": "El usuario \"{{user}}\" y todos sus datos ser?n eliminados permanentemente.",
+      "confirmDeleteAction": "Sí, eliminar",
+      "editRole": "Editar rol"
+    },
+    "roles": {
+      "user": "Usuario",
+      "admin": "Administrador"
+    },
+    "stats": {
+      "title": "Estadísticas del Sistema",
+      "description": "Visión general de los datos almacenados en StoryPlay.",
+      "loading": "Cargando estadísticas...",
+      "registeredClients": "Clientes registrados",
+      "totalProducts": "Total productos (catálogo)",
+      "itemsLast7Days": "Registro de ítems (últimos 7 días)",
+      "booksRegistered": "Libros registrados",
+      "gamesRegistered": "Videojuegos registrados"
+    }
+  },
+  "products": {
+    "page": {
+      "title": "Mi colección",
+      "subtitle": "Gestiona tus libros y videojuegos favoritos.",
+      "searchLabel": "Buscar en la colección",
+      "searchPlaceholder": "Escribe para buscar...",
+      "filterLabel": "Filtrar por",
+      "noResults": "No se encontraron productos con esos criterios.",
+      "empty": "No hay productos aún en tu colección.",
+      "addNew": "+ Añadir nuevo ítem"
+    },
+    "filters": {
+      "any": "Cualquier campo",
+      "title": "Solo título",
+      "author": "Solo autor",
+      "type": "Solo tipo"
+    },
+    "form": {
+      "addTitle": "Añadir item",
+      "editTitle": "Editar item",
+      "subtitle": "Mantén tu colección actualizada con el mismo estilo que el resto de formularios.",
+      "typeLabel": "Tipo",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Título de libro o videojuego",
+      "authorLabel": "Autor",
+      "authorPlaceholder": "Nombre del autor o creador",
+      "genreLabel": "Género",
+      "endDateLabel": "Fecha fin",
+      "ratingLabel": "Puntuación",
+      "reviewLabel": "Reseña",
+      "reviewPlaceholder": "Escribe una reseña breve",
+      "imageTitle": "Imagen del item",
+      "save": "Guardar",
+      "update": "Actualizar",
+      "createSuccess": "Registro creado correctamente",
+      "createError": "Error al guardar",
+      "updateSuccess": "Producto actualizado correctamente",
+      "updateError": "Error al actualizar"
+    },
+    "card": {
+      "imageAlt": "Imagen de {{title}}",
+      "review": "Reseña",
+      "type": "Tipo",
+      "author": "Autor",
+      "endDate": "Fecha finalización",
+      "deleteConfirm": "¿Estás seguro de eliminar \"{{title}}\"?",
+      "deleteError": "Error al eliminar de la base de datos"
+    },
+    "image": {
+      "tooLarge": "La imagen supera {{size}}MB",
+      "previewAlt": "Vista previa",
+      "select": "Seleccionar imagen"
+    },
+    "types": {
+      "select": "Selecciona un tipo",
+      "book": "Libro",
+      "game": "Videojuego"
+    },
+    "genres": {
+      "select": "Selecciona un género de libro o videojuego",
+      "fantasia": "Fantasía",
+      "terror": "Terror",
+      "cienciaFiccion": "Ciencia ficción",
+      "novelaNegra": "Novela negra",
+      "ensayo": "Ensayo",
+      "poesia": "Poesía",
+      "shooter": "Shooter (FPS/TPS)",
+      "rpg": "RPG / Rol",
+      "survival": "Survival horror",
+      "estrategia": "Estrategia",
+      "lucha": "Lucha / Fighting",
+      "battleRoyale": "Battle Royale"
+    }
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Borrar"
+  },
+  "validation": {
+    "requiredName": "El nombre es obligatorio",
+    "onlyLettersSpaces": "Solo se permiten letras y espacios",
+    "requiredAge": "La edad es obligatoria",
+    "agePositive": "Debe ser mayor que 0",
+    "passwordMin": "Mínimo 6 caracteres",
+    "requiredEmail": "El correo es obligatorio",
+    "invalidEmail": "El formato del correo no es válido",
+    "passwordsNoMatch": "Las contraseñas no coinciden",
+    "requiredTitle": "El título es obligatorio",
+    "invalidTitle": "El título debe empezar con mayúscula, permitir nombres compuestos, hasta 50 caracteres, y solo letras, números y espacios.",
+    "requiredAuthor": "El autor es obligatorio",
+    "invalidAuthor": "Debe empezar con mayúscula y contener solo letras mayúsculas y minúsculas",
+    "requiredEndDate": "La fecha de finalización es obligatoria",
+    "requiredRating": "La puntuación es obligatoria",
+    "invalidRating": "La puntuación debe estar entre 0 y 5",
+    "requiredReview": "La reseña es obligatoria",
+    "invalidReview": "Debe iniciar con mayúscula y tener máximo 150 caracteres",
+    "requiredType": "El tipo es obligatorio"
+  }
+}

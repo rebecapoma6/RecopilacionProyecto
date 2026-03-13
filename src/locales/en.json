@@ -1,0 +1,274 @@
+{
+  "common": {
+    "brand": "StoryPlay",
+    "close": "Close",
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "update": "Update",
+    "loading": "Loading...",
+    "notAvailable": "Not available",
+    "noImage": "No image",
+    "unexpectedError": "An unexpected error occurred."
+  },
+  "languages": {
+    "es": "Spanish",
+    "en": "English",
+    "ja": "Japanese"
+  },
+  "navbar": {
+    "logoAlt": "StoryPlay logo",
+    "avatarAlt": "{{user}} avatar",
+    "greeting": "Hi, {{user}}",
+    "userFallback": "User",
+    "collection": "Collection",
+    "profile": "Profile",
+    "admin": "Admin",
+    "stats": "Stats",
+    "logout": "Log out",
+    "login": "Log in",
+    "createAccount": "Create account",
+    "themeToDark": "Enable dark mode",
+    "themeToLight": "Enable light mode",
+    "language": "Language"
+  },
+  "home": {
+    "hero": {
+      "title": "Your personal library for books and video games",
+      "subtitle": "Organize, manage, and keep track of your whole collection in one place. Never forget which books you have read or which games are still waiting for you.",
+      "start": "Get started free",
+      "goToCollection": "Go to my collection",
+      "haveAccount": "I already have an account"
+    },
+    "features": {
+      "books": {
+        "title": "Manage your books",
+        "content": "Add all your favorite books, save authors, publication year, and much more."
+      },
+      "games": {
+        "title": "Video game catalog",
+        "content": "Keep track of your game collection, from classics to the latest releases."
+      },
+      "simple": {
+        "title": "Fast and simple",
+        "content": "Add, edit, and remove items from your collection with just a few clicks. Intuitive interface."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "© 2026 StoryPlay. Your personal cloud library."
+  },
+  "auth": {
+    "fields": {
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Your password",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Your username",
+      "emailFullLabel": "Email address",
+      "emailFullPlaceholder": "Your email address",
+      "passwordRepeatLabel": "Repeat password",
+      "passwordRepeatPlaceholder": "Repeat your password",
+      "avatarOptional": "Optional profile picture"
+    },
+    "login": {
+      "title": "Log in",
+      "subtitle": "Enter your credentials to access StoryPlay.",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Log in",
+      "submitting": "Signing in...",
+      "noAccount": "Not part of StoryPlay yet?",
+      "createNow": "Create your account now",
+      "invalidCredentials": "Invalid credentials",
+      "userInfoError": "Could not retrieve user information",
+      "welcomeBack": "Welcome back",
+      "connectionError": "A connection error occurred"
+    },
+    "register": {
+      "title": "Sign up",
+      "subtitle": "Create a new account to get started.",
+      "submit": "Sign up",
+      "submitting": "Creating account...",
+      "emailUnavailable": "This email is not available",
+      "registerError": "Registration error: {{message}}",
+      "welcomeUser": "Welcome {{user}}"
+    },
+    "recover": {
+      "title": "Recover access",
+      "subtitle": "We will send instructions to your email address.",
+      "submit": "Send email",
+      "inbox": "Check your inbox.",
+      "backHome": "Back to home"
+    }
+  },
+  "profile": {
+    "title": "My profile",
+    "notLoggedIn": "You are not logged in. Sign in to view your profile.",
+    "unavailableEmail": "Email not available",
+    "editProfile": "Edit profile",
+    "backToCollection": "Back to collection",
+    "editModalTitle": "Edit profile",
+    "avatarAlt": "{{user}} avatar",
+    "form": {
+      "subtitle": "Update your personal information and profile picture.",
+      "avatarTitle": "Profile picture",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Your username",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "Your email address",
+      "newPasswordLabel": "New password (optional)",
+      "newPasswordPlaceholder": "New password",
+      "repeatNewPasswordLabel": "Repeat new password",
+      "repeatNewPasswordPlaceholder": "Repeat new password",
+      "saving": "Saving...",
+      "saveChanges": "Save changes",
+      "loadProfileError": "Could not load your profile. Please sign in again.",
+      "loadError": "Error loading profile",
+      "updateError": "Error updating: {{message}}",
+      "unknownError": "Unknown error",
+      "updateSuccess": "Profile updated successfully"
+    }
+  },
+  "admin": {
+    "users": {
+      "title": "User Administration Panel",
+      "description": "Here you can view all registered users on the platform and manage their roles.",
+      "loading": "Loading user list...",
+      "loadError": "You do not have permission or an error occurred while loading users.",
+      "columns": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "createdAt": "Joined",
+        "actions": "Actions"
+      },
+      "noName": "No name",
+      "avatarAlt": "{{user}} avatar",
+      "roleUpdated": "Role updated successfully",
+      "roleUpdateError": "Error updating role",
+      "deleteUserError": "Error deleting user",
+      "deleteUserSuccess": "User deleted successfully",
+      "confirmDeleteTitle": "Are you sure?",
+      "confirmDeleteText": "The user \"{{user}}\" and all their data will be permanently deleted.",
+      "confirmDeleteAction": "Yes, delete",
+      "editRole": "Edit role"
+    },
+    "roles": {
+      "user": "User",
+      "admin": "Admin"
+    },
+    "stats": {
+      "title": "System statistics",
+      "description": "Overview of the data stored in StoryPlay.",
+      "loading": "Loading statistics...",
+      "registeredClients": "Registered clients",
+      "totalProducts": "Total products (catalog)",
+      "itemsLast7Days": "Items registered (last 7 days)",
+      "booksRegistered": "Books registered",
+      "gamesRegistered": "Games registered"
+    }
+  },
+  "products": {
+    "page": {
+      "title": "My collection",
+      "subtitle": "Manage your favorite books and video games.",
+      "searchLabel": "Search the collection",
+      "searchPlaceholder": "Type to search...",
+      "filterLabel": "Filter by",
+      "noResults": "No products matched those filters.",
+      "empty": "There are no products in your collection yet.",
+      "addNew": "+ Add new item"
+    },
+    "filters": {
+      "any": "Any field",
+      "title": "Title only",
+      "author": "Author only",
+      "type": "Type only"
+    },
+    "form": {
+      "addTitle": "Add item",
+      "editTitle": "Edit item",
+      "subtitle": "Keep your collection updated with the same visual style as the rest of the forms.",
+      "typeLabel": "Type",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Book or video game title",
+      "authorLabel": "Author",
+      "authorPlaceholder": "Author or creator name",
+      "genreLabel": "Genre",
+      "endDateLabel": "Finished on",
+      "ratingLabel": "Rating",
+      "reviewLabel": "Review",
+      "reviewPlaceholder": "Write a short review",
+      "imageTitle": "Item image",
+      "save": "Save",
+      "update": "Update",
+      "createSuccess": "Item created successfully",
+      "createError": "Error saving item",
+      "updateSuccess": "Product updated successfully",
+      "updateError": "Error updating product"
+    },
+    "card": {
+      "imageAlt": "Image for {{title}}",
+      "review": "Review",
+      "type": "Type",
+      "author": "Author",
+      "endDate": "Finish date",
+      "deleteConfirm": "Are you sure you want to delete \"{{title}}\"?",
+      "deleteError": "Error deleting from the database"
+    },
+    "image": {
+      "tooLarge": "The image exceeds {{size}}MB",
+      "previewAlt": "Preview",
+      "select": "Select image"
+    },
+    "types": {
+      "select": "Select a type",
+      "book": "Book",
+      "game": "Video game"
+    },
+    "genres": {
+      "select": "Select a book or video game genre",
+      "fantasia": "Fantasy",
+      "terror": "Horror",
+      "cienciaFiccion": "Science fiction",
+      "novelaNegra": "Crime fiction",
+      "ensayo": "Essay",
+      "poesia": "Poetry",
+      "shooter": "Shooter (FPS/TPS)",
+      "rpg": "RPG",
+      "survival": "Survival horror",
+      "estrategia": "Strategy",
+      "lucha": "Fighting",
+      "battleRoyale": "Battle Royale"
+    }
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "validation": {
+    "requiredName": "Name is required",
+    "onlyLettersSpaces": "Only letters and spaces are allowed",
+    "requiredAge": "Age is required",
+    "agePositive": "Must be greater than 0",
+    "passwordMin": "Minimum 6 characters",
+    "requiredEmail": "Email is required",
+    "invalidEmail": "Email format is not valid",
+    "passwordsNoMatch": "Passwords do not match",
+    "requiredTitle": "Title is required",
+    "invalidTitle": "The title must start with a capital letter, allow compound names, be up to 50 characters, and use only letters, numbers, and spaces.",
+    "requiredAuthor": "Author is required",
+    "invalidAuthor": "Must start with a capital letter and contain only letters",
+    "requiredEndDate": "End date is required",
+    "requiredRating": "Rating is required",
+    "invalidRating": "Rating must be between 0 and 5",
+    "requiredReview": "Review is required",
+    "invalidReview": "Must start with a capital letter and be at most 150 characters",
+    "requiredType": "Type is required"
+  }
+}

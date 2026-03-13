@@ -8,6 +8,7 @@ import type { Product } from "../../interfaces/Products";
 import { SupabaseProductRepository } from "../../database/supabase/SupabaseProductRepository";
 import ImageInput from "./ImageInput";
 import toast from 'react-hot-toast';
+import { useTranslation } from "react-i18next";
 
 interface DatosFormularioProps {
   tipo: string;
@@ -37,6 +38,7 @@ interface AgregarItemsProps {
 }
 
 export default function AgregarItems({ initialData }: AgregarItemsProps) {
+  const { t } = useTranslation();
   const repository = new SupabaseProductRepository();
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,26 +57,26 @@ export default function AgregarItems({ initialData }: AgregarItemsProps) {
 
   const [errors, setErrors] = useState<ErrorsProps>({ tipo: "", titulo: "", autor: "", genero: "", fecha_fin: "", puntuacion: "", reseña: "", imagen: "" });
 
-  const opcionesGenero = [
-    { value: "", label: "Selecciona un género de libro o videojuego" },
-    { value: "fantasía", label: "Fantasía", tipo: "Libro" },
-    { value: "terror", label: "Terror", tipo: "Libro" },
-    { value: "ciencia-ficción", label: "Ciencia ficción", tipo: "Libro" },
-    { value: "novelanegra", label: "Novela negra", tipo: "Libro" },
-    { value: "ensayo", label: "Ensayo", tipo: "Libro" },
-    { value: "poesia", label: "Poesía", tipo: "Libro" },
-    { value: "shooter", label: "Shooter (FPS/TPS)", tipo: "Videojuego" },
-    { value: "rpg", label: "RPG / Rol", tipo: "Videojuego" },
-    { value: "survaival", label: "Survival horror", tipo: "Videojuego" },
-    { value: "estrategia", label: "Estrategia", tipo: "Videojuego" },
-    { value: "lucha", label: "Lucha / Fighting", tipo: "Videojuego" },
-    { value: "battleroyale", label: "Battle Royale", tipo: "Videojuego" },
-  ];
+const opcionesGenero = [
+  { value: "", label: 'products.genres.select' },
+  { value: "fantasía", label: 'products.genres.fantasia' },
+  { value: "terror", label: 'products.genres.terror' },
+  { value: "ciencia-ficción", label: 'products.genres.cienciaFiccion' }, // Coincide con 'cienciaFiccion'
+  { value: "novelanegra", label: 'products.genres.novelaNegra' },       // Coincide con 'novelaNegra'
+  { value: "ensayo", label: 'products.genres.ensayo' },
+  { value: "poesia", label: 'products.genres.poesia' },
+  { value: "shooter", label: 'products.genres.shooter' },
+  { value: "rpg", label: 'products.genres.rpg' },
+  { value: "survaival", label: 'products.genres.survival' },          // Coincide con 'survival'
+  { value: "estrategia", label: 'products.genres.estrategia' },
+  { value: "lucha", label: 'products.genres.lucha' },
+  { value: "battleroyale", label: 'products.genres.battleRoyale' },    // Coincide con 'battleRoyale'
+];
 
   const opcionesTipo = [
-    { value: "", label: "Selecciona un tipo" },
-    { value: "libro", label: "Libro" },
-    { value: "videojuego", label: "Videojuego" },
+    { value: "", label: t('products.types.select') },
+    { value: "libro", label: t('products.types.book') },
+    { value: "videojuego", label: t('products.types.game') },
   ];
 
   const handleImage = (file: File) => {
@@ -126,12 +128,12 @@ export default function AgregarItems({ initialData }: AgregarItemsProps) {
       });
 
       if (error) {
-        toast.error("Error al actualizar");
+        toast.error(t('products.form.updateError'));
         console.error(error);
         return;
       }
 
-      toast.success("Producto actualizado correctamente");
+      toast.success(t('products.form.updateSuccess'));
     } else {
       const { error } = await repository.createProduct({
         titulo: datosFormulario.titulo,
@@ -147,12 +149,12 @@ export default function AgregarItems({ initialData }: AgregarItemsProps) {
       });
 
       if (error) {
-        toast.error("Error al guardar");
+        toast.error(t('products.form.createError'));
         console.error(error);
         return;
       }
 
-      toast.success("Registro creado correctamente");
+      toast.success(t('products.form.createSuccess'));
     }
 
     navigate('/products');
@@ -161,34 +163,43 @@ export default function AgregarItems({ initialData }: AgregarItemsProps) {
   return (
     <div>
       <div className="mb-6 text-left">
-        <p className="app-muted mt-1 text-sm">Mantén tu colección actualizada con el mismo estilo que el resto de formularios.</p>
+        <p className="app-muted mt-1 text-sm">{t('products.form.subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Select name="tipo" label="Tipo" value={datosFormulario.tipo} options={opcionesTipo} onChange={handleChange} onBlur={handleBlur} />
         {errors.tipo && <p className="text-sm text-red-500">{errors.tipo}</p>}
 
-        <InputField label="Título" placeholder="Título de libro o videojuego" name="titulo" type="text" value={datosFormulario.titulo} onChange={handleChange} onBlur={handleBlur} error={errors.titulo} />
-        <InputField label="Autor" placeholder="Nombre del autor o creador" name="autor" type="text" value={datosFormulario.autor} onChange={handleChange} onBlur={handleBlur} error={errors.autor} />
+        <InputField label={t('products.form.titleLabel')} placeholder={t('products.form.titlePlaceholder')} name="titulo" type="text" value={datosFormulario.titulo} onChange={handleChange} onBlur={handleBlur} error={errors.titulo} />
+        <InputField label={t('products.form.authorLabel')} placeholder={t('products.form.authorPlaceholder')} name="autor" type="text" value={datosFormulario.autor} onChange={handleChange} onBlur={handleBlur} error={errors.autor} />
 
-        <Select name="genero" label="Género" value={datosFormulario.genero} options={opcionesGenero} onChange={handleChange} onBlur={handleBlur} />
-        {errors.genero && <p className="text-sm text-red-500">{errors.genero}</p>}
-
+        <Select 
+  name="genero" 
+  label={t('products.form.genreLabel')} 
+  value={datosFormulario.genero} 
+  // Traducimos el label de cada opción al vuelo
+  options={opcionesGenero.map(opt => ({ 
+    ...opt, 
+    label: t(opt.label) 
+  }))} 
+  onChange={handleChange} 
+  onBlur={handleBlur} 
+/>
         <div className="grid gap-4 sm:grid-cols-2">
-          <InputField label="Fecha fin" name="fecha_fin" type="date" value={datosFormulario.fecha_fin} onChange={handleChange} onBlur={handleBlur} error={errors.fecha_fin} />
-          <InputField label="Puntuación" name="puntuacion" type="number" value={datosFormulario.puntuacion} onChange={handleChange} onBlur={handleBlur} error={errors.puntuacion} />
+          <InputField label={t('products.form.endDateLabel')} name="fecha_fin" type="date" value={datosFormulario.fecha_fin} onChange={handleChange} onBlur={handleBlur} error={errors.fecha_fin} />
+          <InputField label={t('products.form.ratingLabel')} name="puntuacion" type="number" value={datosFormulario.puntuacion} onChange={handleChange} onBlur={handleBlur} error={errors.puntuacion} />
         </div>
 
-        <InputField label="Reseña" name="reseña" type="text" value={datosFormulario.reseña} onChange={handleChange} onBlur={handleBlur} error={errors.reseña} />
+        <InputField label={t('products.form.reviewLabel')} name="reseña" type="text" value={datosFormulario.reseña} onChange={handleChange} onBlur={handleBlur} error={errors.reseña} />
 
         <div className="app-surface rounded-2xl border p-4">
-          <p className="mb-3 text-sm font-medium">Imagen del item</p>
+          <p className="mb-3 text-sm font-medium">{t('products.form.imageTitle')}</p>
           <ImageInput name="ImagenProducto" defaultImageUrl={datosFormulario.imagen} onFileSelect={handleImage} />
         </div>
 
         <div className="flex flex-col gap-3 pt-3 sm:flex-row">
-          <Button type="button" onClick={() => navigate('/products')} variant="secondary" className="w-full">Cancelar</Button>
-          <Button type="submit" className="w-full">{productToEdit ? 'Actualizar' : 'Guardar'}</Button>
+          <Button type="button" onClick={() => navigate('/products')} variant="secondary" className="w-full">{t('common.cancel')}</Button>
+          <Button type="submit" className="w-full">{productToEdit ? t('common.update') : t('common.save')}</Button>
         </div>
       </form>
     </div>
