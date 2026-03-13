@@ -49,7 +49,7 @@
       },
       "games": {
         "title": "Catálogo de videojuegos",
-        "content": "Lleva el control de tu colecci?n de videojuegos, desde clásicos hasta los más recientes."
+        "content": "Lleva el control de tu colección de videojuegos, desde clásicos hasta los más recientes."
       },
       "simple": {
         "title": "Rápido y sencillo",
@@ -152,7 +152,7 @@
       "deleteUserError": "Error al eliminar el usuario",
       "deleteUserSuccess": "Usuario eliminado correctamente",
       "confirmDeleteTitle": "¿Estás segura?",
-      "confirmDeleteText": "El usuario \"{{user}}\" y todos sus datos ser?n eliminados permanentemente.",
+      "confirmDeleteText": "El usuario \"{{user}}\" y todos sus datos serán eliminados permanentemente.",
       "confirmDeleteAction": "Sí, eliminar",
       "editRole": "Editar rol"
     },
