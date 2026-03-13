@@ -3,52 +3,106 @@ import { validateField } from '../../utils/regex';
 import InputFieldClase from './InputField';
 import Button from './Button';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { createUserRepository } from '../../database/repositories';
+import toast from 'react-hot-toast';
+
 
 export default function RecuperarPass() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: '' });
-  const [errors, setErrors] = useState({ email: '' });
-  const [enviado, setEnviado] = useState(false);
+    const navigate = useNavigate();
+    const userRepository = createUserRepository();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: validateField('email', value) });
-  };
+    const [formData, setFormData] = useState({ email: "" });
+    const [errors, setErrors] = useState({ email: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const error = validateField('email', formData.email);
-    if (error) {
-      setErrors({ email: error });
-      return;
-    }
-    setEnviado(true);
-  };
+    const [enviado, setEnviado] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-  return (
-    <div>
-      {!enviado ? (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="mb-4 text-left">
-            <p className="app-muted mt-1 text-sm">{t('auth.recover.subtitle')}</p>
-          </div>
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        setErrors({ ...errors, [name]: validateField("email", value) }); // Usamos lógica de email
+    };
 
-          <InputFieldClase label={t('auth.fields.emailFullLabel')} id="email" name="email" type="email" value={formData.email} onChange={handleChange} error={errors.email} />
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const error = validateField("email", formData.email);
+        if (error) {
+            setErrors({ email: error });
+            return;
+        }
+        // Lógica de envío...
+        setEnviado(true);
 
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-            <Button type="button" variant="secondary" onClick={() => navigate('/iniciarSesion')} className="w-full">Volver</Button>
-            <Button type="submit" className="w-full">{t('auth.recover.submit')}</Button>
-          </div>
-        </form>
-      ) : (
-        <div className="text-center">
-          <p className="text-base font-medium text-success-700">{t('auth.recover.inbox')}</p>
-          <Button variant="primary" onClick={() => navigate('/')} className="mt-4 w-full">{t('auth.recover.backHome')}</Button>
-        </div>
-      )}
-    </div>
-  );
+        try {
+            if (!formData.email) {
+                toast.error('Error al obtener el email');
+                setLoading(false);
+                return;
+            }
+        
+        const result = await userRepository.resetPasswordForEmail(formData.email);
+        
+        if (result.error) {
+                toast.error('Error al restablecer la contraseña');
+                setLoading(false);
+                return;
+            }
+
+            toast.success('Se ha enviado un enlace a tu correo');
+            setEnviado(true);
+
+
+
+            
+        } catch (error) {
+            toast.error('Ocurrió un error inesperado');
+            console.log(error);
+        }finally {
+            setLoading(false);
+        }
+        
+
+
+
+
+    };
+
+    return (
+       <>
+            <div className="p-3 rounded-lg shadow-sm bg-white">
+                {!enviado ? (
+                    <form onSubmit={handleSubmit} className="space-y-3">
+                        <h2 className="text-xl font-bold">Recuperar Acceso</h2>
+                        <InputFieldClase
+                            label="Correo Electrónico"
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            error={errors.email}
+                        />
+                        <Button 
+                            type="submit" 
+                            disabled={loading}
+                            className="w-full bg-primary-700 hover:bg-primary-600 text-white font-medium py-2 rounded-md transition"
+                        >
+                            {loading ? 'Enviando...' : 'Enviar Email'}
+                        </Button>
+                    </form>
+                ) : (
+                    <div className="text-center">
+                        <p className="text-green-600 font-medium">Revisa tu bandeja de entrada</p>
+                        <Button
+                            variant="primary"
+                            onClick={() => navigate("/")}
+                            className="w-full mt-4"
+                        >
+                            Volver al Inicio
+                        </Button>
+                    </div>
+                )}
+            </div>
+        </>
+    );
 }
