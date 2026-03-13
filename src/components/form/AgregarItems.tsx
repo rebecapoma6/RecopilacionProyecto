@@ -180,7 +180,7 @@ const opcionesGenero = [
   // Traducimos el label de cada opción al vuelo
   options={opcionesGenero.map(opt => ({ 
     ...opt, 
-    label: t(opt.label) 
+    label: t(opt.label as any)
   }))} 
   onChange={handleChange} 
   onBlur={handleBlur} 
